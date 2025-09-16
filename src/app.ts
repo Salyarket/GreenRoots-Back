@@ -1,0 +1,14 @@
+import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
+import { router as apiRouter } from "./routers/index.router.js";
+
+// Créer une app Express
+export const app = express();
+
+// // Autoriser les requêtes cross-origin
+// app.use(cors({ origin: config.server.allowedOrigins }));
+// // Cookie parser
+// app.use(cookieParser());
+// // Body parser pour récupérer les body "application/json" dans req.body
+// app.use(express.json());
+
+app.use("/", apiRouter);

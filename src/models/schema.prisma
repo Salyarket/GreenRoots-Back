@@ -1,0 +1,183 @@
+// =======================================
+// Datasource & Generator
+// =======================================
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =======================================
+// TABLE user_type
+// =======================================
+model UserType {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique @db.VarChar(50)
+  label      String   @db.VarChar(255)
+  tva_rate    Decimal  @db.Decimal(5, 2)
+  created_at   DateTime  @default(now()) 
+  updated_at   DateTime  @updatedAt
+
+  users User[]
+
+  @@map("user_type")
+}
+
+// =======================================
+// TABLE user
+// =======================================
+model User {
+  id          Int       @id @default(autoincrement())
+  firstname   String    @db.VarChar(255)
+  lastname    String    @db.VarChar(255)
+  email       String    @unique @db.VarChar(320)
+  password    String    @db.VarChar(255)
+  role        Role      @default(member)
+  entity_name  String?   @db.VarChar(255)
+  created_at   DateTime  @default(now()) 
+  updated_at   DateTime  @default(now()) 
+
+  // Relations
+  user_type_id  Int      
+  userType    UserType  @relation(fields: [user_type_id], references: [id], onDelete: Restrict)
+  orders      Order[]
+  logs        Log[]
+
+  @@map("user")
+}
+
+enum Role {
+  member
+  admin
+}
+
+// =======================================
+// TABLE product
+// =======================================
+model Product {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(255)
+  slug            String    @unique @db.VarChar(255)
+  price           Decimal   @default(0.0) @db.Decimal(10, 2)
+  description     String    @db.VarChar(2500)
+  image_urls      String[]  @db.VarChar(100) 
+  available       Boolean   @default(true)
+  stock           Int       @default(0)
+  scientific_name  String?   @db.VarChar(255) 
+  carbon          Decimal?  @db.Decimal(10, 2)
+  created_at   DateTime  @default(now()) 
+  updated_at   DateTime  @default(now()) 
+
+  orderItems        OrderItem[]
+  productLocations  ProductLocation[]
+
+  @@map("product")
+}
+
+// =======================================
+// TABLE location
+// =======================================
+model Location {
+  id         Int               @id @default(autoincrement())
+  name       String            @db.VarChar(255)
+  latitude   Float
+  longitude  Float 
+  created_at   DateTime  @default(now()) 
+  updated_at  DateTime   @default(now()) 
+
+  productLocations ProductLocation[]
+
+  @@map("location")
+}
+
+// =======================================
+// TABLE order
+// =======================================
+model Order {
+  id         Int          @id @default(autoincrement())
+  status     OrderStatus
+  total      Decimal      @default(0.0) @db.Decimal(10, 2)
+  created_at   DateTime  @default(now()) 
+  updated_at  DateTime   @default(now()) 
+
+  // Relations
+  user_id Int
+  user   User    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  items  OrderItem[]
+
+  @@map("order")
+}
+
+enum OrderStatus {
+  pending
+  paid
+  cancelled
+}
+
+// =======================================
+// TABLE order_item
+// =======================================
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  unit_price Decimal @db.Decimal(10, 2) 
+
+  // Relations
+  order_id   Int 
+  product_id Int 
+  order     Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [product_id], references: [id])
+
+  @@map("order_item")
+}
+
+// =======================================
+// TABLE product_location (pivot)
+// =======================================
+model ProductLocation {
+  product_id  Int 
+  location_id Int 
+  created_at   DateTime  @default(now()) 
+  updated_at  DateTime   @default(now()) 
+
+  product  Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [location_id], references: [id], onDelete: Cascade)
+
+  @@id([product_id, location_id])
+  @@map("product_location")
+}
+
+// =======================================
+// TABLE log
+// =======================================
+model Log {
+  id        Int       @id @default(autoincrement())
+  level     LogLevel
+  message   String    @db.VarChar(2500)
+  source    LogSource @default(BACK)
+  context   Json?
+  created_at   DateTime  @default(now()) 
+
+  // Relations
+  user_id Int? 
+  user   User? @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("log")
+}
+
+enum LogLevel {
+  info
+  warning
+  error
+  debug
+}
+
+enum LogSource {
+  API
+  CRON
+  FRONT
+  BACK
+}
