@@ -9,6 +9,6 @@ export const app = express();
 // // Cookie parser
 // app.use(cookieParser());
 // // Body parser pour récupérer les body "application/json" dans req.body
-// app.use(express.json());
+app.use(express.json());
 
 app.use("/", apiRouter);
