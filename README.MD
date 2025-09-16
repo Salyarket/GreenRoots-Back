@@ -3,7 +3,7 @@
 ## Initialization
 
 - 1 : Open terminal and type : npm i
-- 2 : create .env and copy paste informations inside .env.example
+- 2 : create a new .env and copy paste informations from .env.example
 
 ## Database PostreSQL + Prisma
 
