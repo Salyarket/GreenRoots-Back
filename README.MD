@@ -15,3 +15,4 @@
 - 6 : _npm run db:seed_ (add the seeding to the database)
 - 7 : _npm run db:studio_ (open a visual from prisma studio )
 
+
