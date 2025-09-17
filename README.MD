@@ -6,7 +6,7 @@
 
 1. Option 1 : **Linux/WSL/OSX**:
    Nothing to do. Option by default  
-   Docker Compose will use by default `npm run dev:linux`.
+
 
 2. Option 2 : **Windows + (Docker Desktop)**:
    We need to override the default linux option.
@@ -23,7 +23,9 @@
    ```
 
 3. Start everything in a terminal with:
-   - if you are using linux : ./init.sh
+   - if you are using linux :
+    - donner droit : chmod +x ./init.sh
+    - puis  ./init.sh : 
    - if you are using windows : ./init.bat
 
 ---
