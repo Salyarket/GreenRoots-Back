@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", locationController.getAll);
 
-// router.get("/:id", locationController.getById);
+router.get("/:id", locationController.getById);
 
 // router.post("/", locationController.create);
 
