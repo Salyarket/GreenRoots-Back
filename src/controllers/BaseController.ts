@@ -14,6 +14,7 @@ export default class BaseController {
       const items = await this.model.findMany();
       res.json(items);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: `Failed to fetch ${this.modelName}` });
     }
   };
@@ -33,6 +34,7 @@ export default class BaseController {
       }
       res.json(item);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: `Failed to fetch ${this.modelName}` });
     }
   };
@@ -59,9 +61,34 @@ export default class BaseController {
         data: req.body,
       });
       res.json(updatedItem);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.code === "P2025") {
+        return res
+          .status(404)
+          .json({ error: `${this.modelName} is not found` });
+      }
       res.status(500).json({ error: `Failed to update ${this.modelName}` });
+    }
+  };
+
+  deleteById = async (req: Request, res: Response) => {
+    try {
+      const itemId = parseInt(req.params.id);
+      const deletedItem = await this.model.delete({
+        where: {
+          id: itemId,
+        },
+      });
+      res.json({
+        message: `${this.modelName} deleted successfully`,
+      });
+    } catch (error: any) {
+      if (error.code === "P2025") {
+        return res
+          .status(404)
+          .json({ error: `${this.modelName} is not found` });
+      }
+      res.status(500).json({ error: `Failed to delete ${this.modelName}` });
     }
   };
 }
