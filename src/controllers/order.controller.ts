@@ -91,3 +91,57 @@ export async function deleteOrder(req: Request, res: Response) {
 
   res.status(204).end();
 }
+
+
+//quand le client sera connecté :
+// import { Role } from "../models/generated/client"; 
+// import { Request, Response, NextFunction } from "express";
+// import jwt from "jsonwebtoken";
+// import { ForbiddenError, UnauthorizedError } from "../lib/errors"; 
+// import { config } from "../../config"; 
+
+// // payload jwt attendu
+// interface MyJWTPayload {
+//   userId: number;
+//   role: Role;
+// }
+
+// export function checkRoles(roles: Role[]) {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     // extraction du token
+//     const token = extractAccessToken(req);
+
+//     // vérification et décode
+//     const { userId, role } = verifyAndDecodeJWT(token);
+
+//     // vérification des rôles autorisés
+//     if (!roles.includes(role)) {
+//       throw new ForbiddenError(`Permission denied for role: ${role}`);
+//     }
+
+//     (req as any).userId = userId;
+//     (req as any).userRole = role;
+
+//     next();
+//   };
+// }
+
+// function extractAccessToken(req: Request): string {
+//   if (typeof req.cookies?.accessToken === "string") {
+//     return req.cookies.accessToken;
+//   }
+
+//   if (typeof req.headers?.authorization === "string") {
+//     return req.headers.authorization.split(" ")[1];
+//   }
+
+//   throw new UnauthorizedError("Access Token not provided");
+// }
+
+// function verifyAndDecodeJWT(accessToken: string): MyJWTPayload {
+//   try {
+//     return jwt.verify(accessToken, config.server.jwtSecret) as MyJWTPayload;
+//   } catch (error) {
+//     throw new UnauthorizedError("Invalid or expired access token");
+//   }
+// }

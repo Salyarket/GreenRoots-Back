@@ -16,3 +16,5 @@ const tokenMember = jwt.sign(
 
 console.log("Admin:", tokenAdmin);
 console.log("Member:", tokenMember);
+
+// lancer "node --loader ts-node/esm generateToken.ts"

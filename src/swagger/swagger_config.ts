@@ -1,6 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express"; // fournit une page web interactive
-
 import { Express } from "express";
 
 const options: swaggerJsdoc.Options = {
@@ -17,6 +16,15 @@ const options: swaggerJsdoc.Options = {
         description: "Serveur local",
       },
     ],
+    components:{
+      securitySchemes:{
+        bearerAuth:{
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/routers/*.ts"], // chemin vers fichiers de routes
 };
