@@ -1,6 +1,26 @@
 <!-- docker exec -it greenroots-backend-1 sh -->
-<!-- docker compose --env-file .env.docker up --build -->
+
 <!--
+docker compose up --build : build sans .env
+docker compose --env-file .env.docker up --build : build avec .env
+
+docker compose down -v --rmi all : supprime tout
+
+docker compose down → stoppe et supprime seulement les conteneurs du projet.
+
+docker compose down -v → supprime aussi les volumes (les données de la DB).
+
+docker rmi -f $(docker images -q) → supprime toutes les images de ta machine.
+
+docker system prune -a → supprime tout ce qui est inutile (conteneurs stoppés, images non utilisées, réseaux orphelins).
+
+
+
+
+Garde DATABASE_URL=postgres://...@db:5432/... (Docker).
+
+Tous tes npm run db:... doivent être exécutés dans le conteneur backend (docker compose exec backend ...).
+
 🔍 Ce qui se passait avant
 
 // Sur ton Windows + Docker, ton code local est monté dans le conteneur avec un volume partagé (./GreenRoots_Backend:/app).
