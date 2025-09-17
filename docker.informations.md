@@ -1,19 +1,18 @@
-### Docker :
+### Docker
 
-- docker compose up --build : build sans .env
-  docker compose --env-file .env.docker up --build : build avec .env
+_1_: Docker commandes
 
-- docker compose down -v --rmi all : supprime tout
+- build sans avoir de .env : "docker compose up --build"
 
-- docker compose down → stoppe et supprime seulement les conteneurs du projet.
+- build avec un .env : "docker compose --env-file .env.docker up --build"
 
-- docker compose down -v → supprime aussi les volumes (les données de la DB).
+- tout supprimer conteneurs+images : "docker compose down -v --rmi all"
 
-- docker rmi -f $(docker images -q) → supprime toutes les images de ta machine.
+- supprime les conteneurs du projet : "docker compose down"
 
-- docker system prune -a → supprime tout ce qui est inutile (conteneurs stoppés, images non utilisées, réseaux orphelins).
+- supprime conteneur + DataBase : "docker compose down -v"
 
-Garde DATABASE_URL=postgres://...@db:5432/... (Docker).
+- se connecter a docker sur le conteneur backend pour donner escript ex : "docker compose exec backend npm run db:migrate:dev "
 
 # Problème rencontré linux/windows
 
