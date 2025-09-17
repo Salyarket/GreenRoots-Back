@@ -2,6 +2,8 @@
 
 ## INITIALIZATION
 
+!!!OPEN YOUR DOCKER APPLICATION ON YOUR COMPUTER!!!
+
 1. Option 1 : **Linux/WSL/OSX**:
    Nothing to do. Option by default  
    Docker Compose will use by default `npm run dev:linux`.
