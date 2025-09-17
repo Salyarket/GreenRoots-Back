@@ -5,9 +5,9 @@ import { z } from "zod";
 const prisma = new PrismaClient();
 
 const locationsSchema = z.object({
-  name: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
+  name: z.string().min(1).max(255),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
 });
 
 class LocationController extends BaseController {
