@@ -1,13 +1,11 @@
-import { Prisma } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 export default class BaseController {
   model: any;
   modelName: string;
 
   constructor(model: any, modelName: string) {
-    this.model = model; // va récuperer prisma.location
+    this.model = model; // va récuperer prisma.location, prisma.order, etc
     this.modelName = modelName;
   }
 
@@ -20,7 +18,7 @@ export default class BaseController {
     }
   };
 
-  getById = async (req: Request, res: Response, next: NextFunction) => {
+  getById = async (req: Request, res: Response) => {
     try {
       const itemId = parseInt(req.params.id);
       const item = await this.model.findUnique({
@@ -36,6 +34,19 @@ export default class BaseController {
       res.json(item);
     } catch (error) {
       res.status(500).json({ error: `Failed to fetch ${this.modelName}` });
+    }
+  };
+
+  create = async (req: Request, res: Response) => {
+    try {
+      console.log(req.body);
+      const newItem = await this.model.create({
+        data: req.body,
+      });
+      res.status(201).json(newItem);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: `Failed to create ${this.modelName}` });
     }
   };
 }

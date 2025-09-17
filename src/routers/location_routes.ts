@@ -7,7 +7,7 @@ router.get("/", locationController.getAll);
 
 router.get("/:id", locationController.getById);
 
-// router.post("/", locationController.create);
+router.post("/", locationController.create);
 
 // router.delete("/:id", locationController.deleteById);
 
