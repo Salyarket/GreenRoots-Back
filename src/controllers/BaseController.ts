@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
+import { ZodSchema } from "zod";
 
 export default class BaseController {
   model: any;
   modelName: string;
+  schema?: ZodSchema<any>;
 
-  constructor(model: any, modelName: string) {
+  constructor(model: any, modelName: string, schema?: ZodSchema<any>) {
     this.model = model; // va récuperer prisma.location, prisma.order, etc
     this.modelName = modelName;
+    this.schema = schema;
   }
 
   getAll = async (req: Request, res: Response) => {
@@ -41,8 +44,11 @@ export default class BaseController {
 
   create = async (req: Request, res: Response) => {
     try {
+      const validatedData = this.schema
+        ? this.schema.parse(req.body)
+        : req.body;
       const newItem = await this.model.create({
-        data: req.body,
+        data: validatedData,
       });
       res.status(201).json(newItem);
     } catch (error) {
@@ -54,11 +60,14 @@ export default class BaseController {
   update = async (req: Request, res: Response) => {
     try {
       const itemId = parseInt(req.params.id);
+      const validatedData = this.schema
+        ? this.schema.parse(req.body)
+        : req.body;
       const updatedItem = await this.model.update({
         where: {
           id: itemId,
         },
-        data: req.body,
+        data: validatedData,
       });
       res.json(updatedItem);
     } catch (error: any) {
