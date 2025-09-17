@@ -12,7 +12,11 @@ _1_: Docker commandes
 
 - supprime conteneur + DataBase : "docker compose down -v"
 
-- se connecter a docker sur le conteneur backend pour donner escript ex : "docker compose exec backend npm run db:migrate:dev "
+- se connecter a docker sur le conteneur backend pour donner des scripts :
+  - ex : "docker compose exec backend npm run db:migrate:dev "
+  - ex : "docker compose exec backend npm run db:reset "
+  - ex : "docker compose exec backend npm run db:migrate:dev "
+  - ex : "docker compose exec backend npm run db:seed "
 
 # Problème rencontré linux/windows
 
