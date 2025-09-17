@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../models/index.js";
 import z from "zod";
+<<<<<<< HEAD
 import { parseIdFromParams } from "./utils.js";
+=======
+>>>>>>> 27d11d5c1d5454f9e1fb5385bc07c9a2bc758ec9
 
 //   id              Int       @id @default(autoincrement())
 //   name            String    @db.VarChar(255)
@@ -16,13 +19,11 @@ import { parseIdFromParams } from "./utils.js";
 //   created_at   DateTime  @default(now()) 
 //   updated_at   DateTime  @default(now()) 
 
-// A fin de faire la barre de recheche sur le catalogue il faudrait une fonction qui récupère tout les noms de produits
-// -- ! pour la function get All products il faudra ajuster les query params pour qu'ils correpondesnt au mieux au filtre 
 
 export async function getAllProducts(req: Request, res: Response) {
 
-  //   Query params permettant la gestion de la pagination (limit + page) et le trie Asc ou Desc (optionnel)
-  //   exemple de query params => /products?limit=10&page=2&order=name:asc  
+//   Query params permettant la gestion de la pagination (limit + page) et le trie Asc ou Desc (optionnel)
+//   exemple de query params => /products?limit=10&page=2&order=name:asc  
 
   const { page, limit, order } = await z.object({
     limit: z.coerce.number().int().min(1).optional().default(8),
