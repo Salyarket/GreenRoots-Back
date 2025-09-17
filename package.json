@@ -15,7 +15,8 @@
     "db:migrate:deploy": "prisma migrate deploy --schema=./src/models/schema.prisma",
     "db:reset": "prisma migrate reset --force --schema=./src/models/schema.prisma",
     "db:studio": "prisma studio --schema=./src/models/schema.prisma",
-    "db:seed": "tsx --env-file=.env ./src/models/seeding.ts"
+    "db:seed": "tsx --env-file=.env ./src/models/seeding.ts",
+    "token": "tsx generateToken.ts"
   },
   "keywords": [],
   "author": "SOTA : Saliha, Oumaïma, Tarig, Adrien",
@@ -23,7 +24,10 @@
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.16.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
@@ -31,6 +35,8 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.4.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^6.16.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.5",
