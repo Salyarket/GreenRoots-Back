@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../models/index.js";
 import z from "zod";
-<<<<<<< HEAD
 import { parseIdFromParams } from "./utils.js";
-=======
->>>>>>> 27d11d5c1d5454f9e1fb5385bc07c9a2bc758ec9
 
 //   id              Int       @id @default(autoincrement())
 //   name            String    @db.VarChar(255)
