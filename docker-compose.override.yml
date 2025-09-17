@@ -1,3 +1,0 @@
-services:
-  backend:
-    command: npm run dev:win
