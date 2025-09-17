@@ -38,7 +38,6 @@ router.patch("/orders/:id", checkRoles(["admin"]), updateOrder);
 // Supprimer une commande (admin only)
 router.delete("/orders/:id", checkRoles(["admin"]), deleteOrder);
 
-
 //quand le client sera connecté :
 // import { Role } from "../models/generated/client"; 
 // import { Request, Response, NextFunction } from "express";

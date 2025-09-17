@@ -7,7 +7,7 @@ export class HttpClientError extends Error {
       super(message);
       this.name = this.constructor.name;
       this.status = status;
-      Error.captureStackTrace?.(this, this.constructor); //méthode NodeJS qui crée et personnalise la stack trace d’une erreur
+      Error.captureStackTrace?.(this, this.constructor); //méthode qui crée et personnalise la stack trace d’une erreur
     }
   }
   export class BadRequestError extends HttpClientError {
