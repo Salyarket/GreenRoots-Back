@@ -1,42 +1,42 @@
 import { Router } from "express";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
+import { 
+    getAllOrders, 
+    getOneOrder, 
+    createOrder, 
+    updateOrder, 
+    deleteOrder 
+  } from "../controllers/order.controller.js";
 
 export const router = Router();
 
 // Récup toutes les commandes (admin only, back-office)
-router.get("/orders", checkRoles(["admin"]), (req, res) => {
-  res.json({ message: "Toutes les commandes (admin)" });
-});
+router.get("/orders", checkRoles(["admin"]), getAllOrders);
 
-// Les commandes d’un utilisateur précis (admin only)
+// voir commande complète avec user + type + items
+router.get("/orders/:id", checkRoles(["admin"]), getOneOrder);
+
+// voir commandes d’un utilisateur précis (admin only)
 router.get("/users/:id/orders", checkRoles(["admin"]), (req, res) => {
   const userId = req.params.id;
   res.json({ message: `Commandes de l’utilisateur ${userId}` });
 });
 
-// Les commandes type historique personnel (member only)
+// voir commandes type historique personnel (member only)
 router.get("/me/orders", checkRoles(["member"]), (req, res) => {
   res.json({
-    message: `Commandes de l’utilisateur connecté #${(req as any).userId}`,
+    message: `Commandes de l’utilisateur connecté ${(req as any).userId}`,
   });
 });
 
-// Créer une commande depuis le panier (member only)
-router.post("/orders", checkRoles(["member"]), (req, res) => {
-  res.json({ message: "Nouvelle commande créée" });
-});
+// créer une commande depuis le panier (member only)
+router.post("/orders", checkRoles(["member"]), createOrder);
 
-// Modifier le statut (admin only : pending > paid/cancelled)
-router.patch("/orders/:id", checkRoles(["admin"]), (req, res) => {
-  const orderId = req.params.id;
-  res.json({ message: `Commande ${orderId} mise à jour` });
-});
+// modifier le statut (admin only : pending > paid/cancelled)
+router.patch("/orders/:id", checkRoles(["admin"]), updateOrder);
 
 // Supprimer une commande (admin only)
-router.delete("/orders/:id", checkRoles(["admin"]), (req, res) => {
-  const orderId = req.params.id;
-  res.json({ message: `Commande ${orderId} supprimée` });
-});
+router.delete("/orders/:id", checkRoles(["admin"]), deleteOrder);
 
 
 //quand le client sera connecté :
