@@ -18,7 +18,10 @@
     "strict": true /* Enable all strict type-checking options. */,
 
     /* Completeness */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+
+    /* typage de multer */
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   }
   // "exclude": ["**/*.test.ts"]  // TODO: trouver un moyen de garder l'auto-import dans les fichiers tout en excluant les tests du bundle final
 }
