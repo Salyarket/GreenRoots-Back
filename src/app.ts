@@ -1,7 +1,7 @@
 import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
 import { router as apiRouter } from "./routers/index.router.js";
-
 import { setupSwagger } from "./swagger/swagger_config.js";
+import { globalErrorHandler } from "./middlewares/global-error-handler.js";
 
 // Créer une app Express
 export const app = express();
@@ -16,3 +16,4 @@ export const app = express();
 setupSwagger(app);
 
 app.use("/", apiRouter);
+app.use(globalErrorHandler); // Global error middleware
