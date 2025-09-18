@@ -1,10 +1,17 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
 import { router as apiRouter } from "./routers/index.router.js";
-
 import { setupSwagger } from "./swagger/swagger_config.js";
 
-// Créer une app Express
-export const app = express();
+
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET manquant dans .env");
+  }
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL manquant dans .env");
+  }
 
 // // Autoriser les requêtes cross-origin
 // app.use(cors({ origin: config.server.allowedOrigins }));
@@ -13,6 +20,9 @@ export const app = express();
 // // Body parser pour récupérer les body "application/json" dans req.body
 // app.use(express.json());
 
-setupSwagger(app);
+// Créer une app Express
+export const app = express();
+app.use(express.json());
 
+setupSwagger(app);
 app.use("/", apiRouter);

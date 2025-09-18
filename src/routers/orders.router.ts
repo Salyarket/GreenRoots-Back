@@ -5,7 +5,9 @@ import {
     getOneOrder, 
     createOrder, 
     updateOrder, 
-    deleteOrder 
+    deleteOrder,
+    getMyOrders,
+    getOrdersByUserId
   } from "../controllers/order.controller.js";
 
 export const router = Router();
@@ -67,7 +69,7 @@ router.get("/orders/:id", checkRoles(["admin"]), getOneOrder);
  *         description: Liste des commandes de l’utilisateur
  */
 // voir commandes d’un utilisateur précis (admin only)
-router.get("/users/:id/orders", checkRoles(["admin"]), (req, res) => {
+router.get("/users/:id/orders", checkRoles(["admin"]), getOrdersByUserId, (req, res) => {
   const userId = req.params.id;
   res.json({ message: `Commandes de l’utilisateur ${userId}` });
 });
@@ -85,7 +87,7 @@ router.get("/users/:id/orders", checkRoles(["admin"]), (req, res) => {
  *         description: Liste des commandes personnelles
  */
 // voir commandes type historique personnel (member only)
-router.get("/me/orders", checkRoles(["member"]), (req, res) => {
+router.get("/me/orders", checkRoles(["member"]), getMyOrders, (req, res) => {
   res.json({
     message: `Commandes de l’utilisateur connecté ${(req as any).userId}`,
   });
