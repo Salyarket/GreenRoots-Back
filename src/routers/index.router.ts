@@ -3,8 +3,10 @@ import locationRouter from "./location.router.js";
 
 export const router = Router();
 
-router.use("/locations", locationRouter);
-
-router.use("/", (req, res) => {
-  res.send("Welcome on the GreenRoots API");
+router.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the GREENROOTS API",
+  });
 });
+
+router.use("/locations", locationRouter);
