@@ -6,5 +6,5 @@ export const router = Router();
 router.use("/auth", authRouter);
 
 router.use("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Welcome on the GreenRoots API");
 });
