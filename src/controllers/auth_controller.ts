@@ -3,19 +3,27 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ZodType } from "zod";
 
 export default class AuthController {
   model: PrismaClient["user"]; // modèle prisma user
   modelName: string;
+  schema?: ZodType;
 
-  constructor(prisma: PrismaClient, modelName: string) {
+  constructor(prisma: PrismaClient, modelName: string, schema?: ZodType) {
     this.model = prisma.user; // recupere le model user
     this.modelName = modelName;
+    this.schema = schema;
   }
 
   // 1. FUNCTION REGISTER
   register = async (req: Request, res: Response) => {
-    const { email, password } = req.body as { email: string; password: string };
+    const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
+
+    const { email, password } = validatedData as {
+      email: string;
+      password: string;
+    };
     try {
       // hasher pwd
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,9 +33,9 @@ export default class AuthController {
           email: email,
           password: hashedPassword,
           role: "member",
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          user_type_id: req.body.user_type_id,
+          firstname: validatedData.firstname,
+          lastname: validatedData.lastname,
+          user_type_id: validatedData.user_type_id,
         },
       });
       return res.json({ message: "New member created" });
@@ -49,7 +57,12 @@ export default class AuthController {
 
   // 2. FUNCTION LOGIN
   login = async (req: Request, res: Response) => {
-    const { email, password } = req.body as { email: string; password: string };
+    const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
+
+    const { email, password } = validatedData as {
+      email: string;
+      password: string;
+    };
 
     try {
       // trouver user avec son email
