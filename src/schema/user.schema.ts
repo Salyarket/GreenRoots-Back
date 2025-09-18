@@ -10,7 +10,7 @@ export const createUserSchema = z.object({
     userTypeId: z.number().int().positive(), // lien avec user_type
     });
     
-    export const updateUserSchema = z.object({
+export const updateUserSchema = z.object({
         firstname: z.string().min(1).max(255).optional(),
         lastname: z.string().min(1).max(255).optional(),
         email: z.string().email().max(320).optional(),

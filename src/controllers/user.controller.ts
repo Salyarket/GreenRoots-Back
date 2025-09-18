@@ -1,91 +1,153 @@
-import { createOrderSchema, updateOrderSchema } from "../schemas/order.schema.js";
+import bcrypt from "bcrypt";
+import { createUserSchema, updateUserSchema } from "../schema/user.schema.js";
 import { NotFoundError } from "../lib/errors.js";
 import { prisma } from "../models/index.js";
 import { Request, Response } from "express";
 
-// GET all orders
-export async function getAllOrders(req: Request, res: Response) {
-  const orders = await prisma.order.findMany({
-    where: { user_id: parseInt(req.params.id) },
-    include: { items: { include: { product: true } } },
-  });
-  res.json(orders);
-}
-
-// GET one order
-export async function getOneOrder(req: Request, res: Response) {
-  const order_id = parseInt(req.params.id);
-
-  const order = await prisma.order.findUnique({
-    where: { id: order_id },
+// GET all users
+export async function getAllUsers(req: Request, res: Response) {
+  const users = await prisma.user.findMany({
     include: {
-      user: { include: { userType: true } },
-      items: { include: { product: true } },
+      userType: true,
+      orders: true,
+      logs: true,
     },
   });
-
-  if (!order) throw new NotFoundError(`Order not found: ${order_id}`);
-
-  res.json(order);
+  res.json(users);
 }
 
-// CREATE an order
-export async function createOrder(req: Request, res: Response) {
-  const data = await createOrderSchema.parseAsync(req.body);
+// GET one user
+export async function getOneUser(req: Request, res: Response) {
+  const user_id = parseInt(req.params.id);
 
-  const createdOrder = await prisma.order.create({
+  const user = await prisma.user.findUnique({
+    where: { id: user_id },
+    include: {
+      userType: true,
+      orders: { include: { items: { include: { product: true } } } },
+      logs: true,
+    },
+  });
+  if (!user) throw new NotFoundError(`User not found: ${user_id}`);
+  res.json(user);
+}
+
+// CREATE an user
+export async function createUser(req: Request, res: Response) {
+  const data = await createUserSchema.parseAsync(req.body);
+
+  // Hash password before backup
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+
+  const createdUser = await prisma.user.create({
     data: {
-      status: data.status,
-      total: data.total,
-      user: { connect: { id: data.userId } },
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      password: hashedPassword,
+      role: data.role,
+      entity_name: data.entity_name,
+      userType: { connect: { id: data.userTypeId }}
     },
+    include: { userType: true }
   });
-
-  res.status(201).json(createdOrder);
+  // suppression du mdp avant retour
+  delete (createdUser as any).password;
+  res.status(201).json(createdUser);
 }
 
-// UPDATE an order
-export async function updateOrder(req: Request, res: Response) {
-  const order_id = parseInt(req.params.id);
-  const data = await updateOrderSchema.parseAsync(req.body);
+// UPDATE an user
+export async function updateUser(req: Request, res: Response) {
+  const user_id = parseInt(req.params.id);
+  const data = await updateUserSchema.parseAsync(req.body);
 
-  const foundOrder = await prisma.order.findUnique({ where: { id: order_id } });
-  if (!foundOrder) throw new NotFoundError(`Order not found: ${order_id}`);
+  const foundUser = await prisma.user.findUnique({ where: { id: user_id } });
+  if (!foundUser) throw new NotFoundError(`User not found: ${user_id}`);
 
-  const updatedOrder = await prisma.order.update({
-    where: { id: order_id },
-    data: { ...data, updated_at: new Date() },
+  // Préparation des données à mettre à jour
+  const updateData: any = { ...data, updated_at: new Date() };
+
+  // Si password fourni on le hash avant maj
+  if (data.password) {
+    updateData.password = await bcrypt.hash(data.password, 10);
+  }
+
+  // Si userTypeId fourni on le transforme en relation Prisma
+  if (data.userTypeId) {
+    updateData.userType = { connect: { id: data.userTypeId } };
+    delete updateData.userTypeId;
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user_id },
+    data: updateData,
+    include: { userType: true }
   });
-
-  res.json(updatedOrder);
+  res.json(updatedUser);
 }
 
-// DELETE an order
-export async function deleteOrder(req: Request, res: Response) {
-  const order_id = parseInt(req.params.id);
-
-  const order = await prisma.order.findUnique({ where: { id: order_id } });
-  if (!order) throw new NotFoundError(`Order not found: ${order_id}`);
-
-  await prisma.order.delete({ where: { id: order_id } });
-
+// DELETE an user
+export async function deleteUser(req: Request, res: Response) {
+  const user_id = parseInt(req.params.id);
+  const user = await prisma.user.findUnique({ where: { id: user_id } });
+  if (!user) throw new NotFoundError(`User not found: ${user_id}`);
+  await prisma.user.delete({ where: { id: user_id } });
   res.status(204).end();
 }
 
-export async function getOrdersByUserId(req: Request, res: Response) {
-  const user_id = parseInt(req.params.id);
-  const orders = await prisma.order.findMany({
-    where: { user_id },
-    include: { items: { include: { product: true } } },
+// GET mon profil 
+export async function getMe(req: Request, res: Response) {
+  const userId = (req as any).userId; // injecté par le middleware JWT
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { userType: true, orders: true, logs: true },
   });
-  res.json(orders);
+
+  if (!user) throw new NotFoundError(`User not found: ${userId}`);
+
+  // Supprime le mot de passe avant retour
+  const userSafe: any = user;
+  delete userSafe.password;
+
+  res.json(userSafe);
 }
 
-export async function getMyOrders(req: Request, res: Response) {
-  const user_id = (req as any).userId; // injecté par le middleware JWT
-  const orders = await prisma.order.findMany({
-    where: { user_id },
-    include: { items: { include: { product: true } } },
+// PATCH mon profil
+export async function updateMe(req: Request, res: Response) {
+  const userId = (req as any).userId;
+  const role = (req as any).role;
+
+  const data = await updateUserSchema.parseAsync(req.body);
+
+  const foundUser = await prisma.user.findUnique({ where: { id: userId } });
+  if (!foundUser) throw new NotFoundError(`User not found: ${userId}`);
+
+  const updateData: any = { ...data, updated_at: new Date() };
+
+  // Hashage si password fourni 
+  if (data.password) {
+    updateData.password = await bcrypt.hash(data.password, 10);
+  }
+
+  // Ca bloque les membres sur les champs sensibles
+  if (role !== "admin") {
+    delete updateData.role;
+    delete updateData.userTypeId;
+  } else if (data.userTypeId) {
+    updateData.user_type_id = data.userTypeId;
+    delete updateData.userTypeId;
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    include: { userType: true },
   });
-  res.json(orders);
+
+  // Supprime le mot de passe avant retour
+  const userSafe: any = updatedUser;
+  delete userSafe.password;
+
+  res.json(userSafe);
 }
