@@ -1,5 +1,6 @@
 import { Router } from "express";
 import locationController from "../controllers/location.controllers.js";
+import { checkRoles } from "../middlewares/access-control.middleware.js";
 
 const router = Router();
 
@@ -22,7 +23,7 @@ const router = Router();
  *      400:
  *        description: Paramètres de requête invalides
  */
-router.get("/", locationController.getAll);
+router.get("/", checkRoles(["admin"]), locationController.getAll);
 
 /**
  * @swagger
@@ -51,7 +52,7 @@ router.get("/", locationController.getAll);
  *      400:
  *        description: Paramètres de requête invalides
  */
-router.get("/:id", locationController.getById);
+router.get("/:id", checkRoles(["admin"]), locationController.getById);
 
 /**
  * @swagger
@@ -78,7 +79,7 @@ router.get("/:id", locationController.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", locationController.create);
+router.post("/", checkRoles(["admin"]), locationController.create);
 
 /**
  * @swagger
@@ -115,7 +116,7 @@ router.post("/", locationController.create);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:id", locationController.update);
+router.put("/:id", checkRoles(["admin"]), locationController.update);
 
 /**
  * @swagger
@@ -140,6 +141,6 @@ router.put("/:id", locationController.update);
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/:id", locationController.deleteById);
+router.delete("/:id", checkRoles(["admin"]), locationController.deleteById);
 
 export default router;
