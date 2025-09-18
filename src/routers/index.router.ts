@@ -1,5 +1,5 @@
 import { Router } from "express";
-import locationRouter from "./location_routes.js";
+import locationRouter from "./location.router.js";
 
 export const router = Router();
 

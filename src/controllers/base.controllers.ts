@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { ZodSchema } from "zod";
+import { ZodType } from "zod";
 
 export default class BaseController {
   model: any;
   modelName: string;
-  schema?: ZodSchema<any>;
+  schema?: ZodType;
 
-  constructor(model: any, modelName: string, schema?: ZodSchema<any>) {
+  constructor(model: any, modelName: string, schema?: ZodType) {
     this.model = model; // va récuperer prisma.location, prisma.order, etc
     this.modelName = modelName;
     this.schema = schema;
