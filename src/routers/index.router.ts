@@ -3,7 +3,7 @@ import locationRouter from "./location.router.js";
 
 export const router = Router();
 
-router.use("/location", locationRouter);
+router.use("/locations", locationRouter);
 
 router.use("/", (req, res) => {
   res.send("Hello World");

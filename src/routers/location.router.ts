@@ -5,7 +5,7 @@ const router = Router();
 
 /**
  * @swagger
- * /location:
+ * /locations:
  *  get:
  *    summary: Lister tous les terrains
  *    description: Retourne la liste complète des terrains disponibles
@@ -26,7 +26,7 @@ router.get("/", locationController.getAll);
 
 /**
  * @swagger
- * /location/{id}:
+ * /locations/{id}:
  *  get:
  *    summary: Lister un terrain
  *    description: Retourne les informations d'un terrain
@@ -55,7 +55,7 @@ router.get("/:id", locationController.getById);
 
 /**
  * @swagger
- * /location:
+ * /locations:
  *   post:
  *     summary: Créer un terrain
  *     description: Ajoute un nouveau terrain dans la base de données
@@ -82,7 +82,7 @@ router.post("/", locationController.create);
 
 /**
  * @swagger
- * /location/{id}:
+ * /locations/{id}:
  *   put:
  *     summary: Mettre à jour un terrain
  *     description: Met à jour les informations d'un terrain existant
@@ -119,7 +119,7 @@ router.put("/:id", locationController.update);
 
 /**
  * @swagger
- * /location/{id}:
+ * /locations/{id}:
  *   delete:
  *     summary: Supprimer un terrain
  *     description: Supprime un terrain existant
