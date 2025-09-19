@@ -1,8 +1,6 @@
-# Quand je construis mon image, je ne veux pas y ajouter les fichiers suivants : 
+# lors de la construction de l'image docker ne pas garder : 
 .env 
 dist
 node_modules/
 .git
 .gitignore
-Dockerfile
-docker-compose.yml

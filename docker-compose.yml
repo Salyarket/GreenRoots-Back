@@ -22,7 +22,7 @@ services:
       DATABASE_URL: postgres://greenroots:greenroots@db:5432/greenroots
       JWT_SECRET: mon-super-secret-jwt
     ports:
-      - "3001:3000" # API accessible sur localhost:3000
+      - "3001:3000" # 3001=backend docker accessible / 3000=express en interne regarde le 3000
     depends_on:
       - db
     volumes:

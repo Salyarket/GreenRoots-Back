@@ -1,7 +1,7 @@
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
 
 ### User registration
-POST http://localhost:3000/auth/register
+POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### GET ALL TYPES
-GET http://localhost:3000/
+GET http://localhost:3001/locations
 
 
 
