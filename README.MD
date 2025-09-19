@@ -21,7 +21,7 @@
         "
 
 5.  Ouvrir un terminal et tappez :
-    Option 1 : - si vous utilisez LINUX/OSX/WSL : - tappez : "chmod +x ./init.sh" puis tappez ."/init.sh"
+    Option 1 : - si vous utilisez LINUX/OSX/WSL : - tappez : "chmod +x ./init.sh" puis tappez "./init.sh"
     Option 2 : - si vous utilisez WINDOWS : - tappez : "./init.bat"
 
 ---
