@@ -18,11 +18,11 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      PORT: 3000
+      PORT: 4000
       DATABASE_URL: postgres://greenroots:greenroots@db:5432/greenroots
       JWT_SECRET: mon-super-secret-jwt
     ports:
-      - "3001:3000" # 3001=backend docker accessible / 3000=express en interne regarde le 3000
+      - "4001:4000" # 4001=backend docker accessible / 4000=express en interne regarde le 4000
     depends_on:
       - db
     volumes:
