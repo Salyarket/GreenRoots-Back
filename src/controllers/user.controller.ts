@@ -130,10 +130,11 @@ export async function updateMe(req: Request, res: Response) {
     updateData.password = await bcrypt.hash(data.password, 10);
   }
 
-  // Ca bloque les membres sur les champs sensibles
+  // Ça bloque les non-admins sur les champs sensibles
   if (role !== "admin") {
     delete updateData.role;
     delete updateData.userTypeId;
+    
   } else if (data.userTypeId) {
     updateData.user_type_id = data.userTypeId;
     delete updateData.userTypeId;
