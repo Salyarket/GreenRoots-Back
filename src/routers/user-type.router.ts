@@ -79,12 +79,12 @@ router.get("/:id", checkRoles(["admin"]), userTypeController.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", checkRoles(["admin"]), userTypeController.create);
+router.post("/", userTypeController.create);
 
 /**
  * @swagger
  * /user-types/{id}:
- *   put:
+ *   patch:
  *     summary: Mettre à jour un type d'utilisateurs
  *     description: Met à jour les informations d'un type d'utilisateurs existant
  *     tags: [User-types]
@@ -116,7 +116,7 @@ router.post("/", checkRoles(["admin"]), userTypeController.create);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:id", checkRoles(["admin"]), userTypeController.update);
+router.patch("/:id", userTypeController.update);
 
 /**
  * @swagger

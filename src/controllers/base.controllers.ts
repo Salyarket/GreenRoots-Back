@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ZodType } from "zod";
+import { ZodType, ZodObject } from "zod";
 
 export default class BaseController {
   model: any;
@@ -60,9 +60,10 @@ export default class BaseController {
   update = async (req: Request, res: Response) => {
     try {
       const itemId = parseInt(req.params.id);
-      const validatedData = this.schema
-        ? this.schema.parse(req.body)
-        : req.body;
+      const validatedData =
+        this.schema && this.schema instanceof ZodObject
+          ? (this.schema as ZodObject<any>).partial().parse(req.body)
+          : req.body;
       const updatedItem = await this.model.update({
         where: {
           id: itemId,

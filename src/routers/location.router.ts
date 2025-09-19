@@ -84,7 +84,7 @@ router.post("/", checkRoles(["admin"]), locationController.create);
 /**
  * @swagger
  * /locations/{id}:
- *   put:
+ *   patch:
  *     summary: Mettre à jour un terrain
  *     description: Met à jour les informations d'un terrain existant
  *     tags: [Locations]
@@ -116,7 +116,7 @@ router.post("/", checkRoles(["admin"]), locationController.create);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:id", checkRoles(["admin"]), locationController.update);
+router.patch("/:id", checkRoles(["admin"]), locationController.update);
 
 /**
  * @swagger
