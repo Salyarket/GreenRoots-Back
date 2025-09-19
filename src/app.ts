@@ -7,6 +7,8 @@ import { setupSwagger } from "./swagger/swagger_config.js";
 
 import cors from "cors";
 
+// Créer une app Express
+export const app = express();
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET manquant dans .env");
@@ -22,9 +24,6 @@ app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 
 // // Body parser pour récupérer les body "application/json" dans req.body
 app.use(express.json());
-
-// Créer une app Express
-export const app = express();
 
 setupSwagger(app);
 app.use("/", apiRouter);
