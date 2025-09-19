@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 //import { Role } from "../models/generated/client"; ===> quand client branché
 
-
 // type attendu dans le jwt
 interface MyJWTPayload {
   userId: number;
@@ -22,19 +21,22 @@ export function checkRoles(roles: string[]) {
 
     try {
       // vérif et décode le jwt
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as MyJWTPayload;
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET!
+      ) as MyJWTPayload;
 
       // vérif du rôle
       if (!roles.includes(decoded.role)) {
         return res.status(403).json({ error: "Accès interdit" });
       }
 
-      // stocker les infos dans req 
+      // stocker les infos dans req
       (req as any).userId = decoded.userId;
       (req as any).userRole = decoded.role;
 
-      next(); 
-    } catch (err) {
+      next();
+    } catch {
       return res.status(401).json({ error: "Token invalide ou expiré" });
     }
   };

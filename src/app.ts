@@ -5,6 +5,8 @@ import express from "express"; // Pour installer les types d'Express : npm i --s
 import { router as apiRouter } from "./routers/index.router.js";
 import { setupSwagger } from "./swagger/swagger_config.js";
 
+import cors from "cors";
+
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET manquant dans .env");
@@ -14,15 +16,15 @@ if (!process.env.DATABASE_URL) {
 }
 
 // // Autoriser les requêtes cross-origin
-// app.use(cors({ origin: config.server.allowedOrigins }));
+app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 // // Cookie parser
 // app.use(cookieParser());
+
 // // Body parser pour récupérer les body "application/json" dans req.body
-// app.use(express.json());
+app.use(express.json());
 
 // Créer une app Express
 export const app = express();
-app.use(express.json());
 
 setupSwagger(app);
 app.use("/", apiRouter);

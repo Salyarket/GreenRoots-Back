@@ -40,6 +40,8 @@ git pull origin dev # récupérer les derniers changements de l’équipe
 git checkout feature/ma-feature
 git merge dev # fusionner dev dans ma feature
 résoudre les conflits si besoin
+
+
 git push
 
 ---
