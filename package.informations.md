@@ -11,6 +11,7 @@ _*"devDependencies":*_
 - @types/node + @types/express : types TS pour node/express
 - "prisma": CLI pour générer le client, faire des mirations et gérer le schema
 - "ts-node" : permet de lancer le code TS sans build (utile en dev)
+- "nodemon" : permet le hot reload, mieux gérer que tsx
 - "tsx" : exécuteur TS pour lancer .ts avec Node.Js sans les compiler (gère type:module)
 - "typescript": transpile code TS en JS
 - "typescript-eslint": règles de base d’ESLint pour Typescript

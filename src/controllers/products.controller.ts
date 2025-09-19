@@ -141,7 +141,7 @@ export async function updateProduct(req: Request, res: Response) {
   try {
     const productId = Number(req.params.id);
     if (isNaN(productId)) {
-      return res.status(400).json({ error: "Invalid product ID" });
+      return res.status(400).json({ error: "Id du produit invalid" });
     }
 
     // Validation Zod avec champs optionnels

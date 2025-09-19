@@ -17,6 +17,34 @@ const options: swaggerJsdoc.Options = {
         description: "Serveur local",
       },
     ],
+    components: {
+      schemas: {
+        Location: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            name: {
+              type: "string",
+              example: "Amazonie",
+            },
+            latitude: {
+              type: "number",
+              format: "float",
+              example: -3.465305,
+            },
+            longitude: {
+              type: "number",
+              format: "float",
+              example: -62.215881,
+            },
+          },
+          required: ["name", "latitude", "longitude"],
+        },
+      },
+    },
   },
   apis: ["./src/routers/*.ts"], // chemin vers fichiers de routes
 };

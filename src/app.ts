@@ -10,6 +10,7 @@ export const app = express();
 // app.use(cors({ origin: config.server.allowedOrigins }));
 // // Cookie parser
 // app.use(cookieParser());
+
 // // Body parser pour récupérer les body "application/json" dans req.body
 app.use(express.json());
 
