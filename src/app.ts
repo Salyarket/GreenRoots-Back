@@ -3,11 +3,13 @@ import { router as apiRouter } from "./routers/index.router.js";
 
 import { setupSwagger } from "./swagger/swagger_config.js";
 
+import cors from "cors";
+
 // Créer une app Express
 export const app = express();
 
 // // Autoriser les requêtes cross-origin
-// app.use(cors({ origin: config.server.allowedOrigins }));
+app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 // // Cookie parser
 // app.use(cookieParser());
 
