@@ -1,6 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express"; // fournit une page web interactive
-
 import { Express } from "express";
 
 const options: swaggerJsdoc.Options = {
