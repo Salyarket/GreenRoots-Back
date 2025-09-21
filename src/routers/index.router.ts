@@ -1,9 +1,16 @@
 import { Router } from "express";
-import { router as ordersRouter } from "./orders.router.js";
-
+import authRouter from "./auth.router.js";
+import locationRouter from "./location.router.js";
+import userTypesRouter from "./user-type.router.js";
 
 export const router = Router();
 
-router.use("/", ordersRouter, (req, res) => {
-  res.send("Hello World");
+router.get("/", (req, res) => {
+  res.redirect("/api-docs");
 });
+
+router.use("/auth", authRouter);
+
+router.use("/locations", locationRouter);
+
+router.use("/user-types", userTypesRouter);

@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 //import { Role } from "../models/generated/client"; ===> quand client branché
 
-
 const JWT_SECRET = process.env.JWT_SECRET || "changeme";
 
 // type attendu dans le jwt
@@ -36,7 +35,7 @@ export function checkRoles(roles: string[]) {
       (req as any).userRole = decoded.role;
 
       next(); 
-    } catch (err) {
+    } catch {
       return res.status(401).json({ error: "Token invalide ou expiré" });
     }
   };
