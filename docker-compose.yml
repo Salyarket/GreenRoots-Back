@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: greenroots
+      POSTGRES_PASSWORD: greenroots
+      POSTGRES_DB: greenroots
+    ports:
+      - "5454:5432" # Postgres accessible sur localhost:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgres://greenroots:greenroots@db:5432/greenroots
+      JWT_SECRET: mon-super-secret-jwt
+    ports:
+      - "4001:4000" # 4001=backend docker accessible / 4000=express en interne regarde le 4000
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080" # Adminer accessible sur localhost:8080
+    depends_on:
+      - db
+
+volumes:
+  db-data:

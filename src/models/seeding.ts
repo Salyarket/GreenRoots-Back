@@ -3,172 +3,130 @@ import { PrismaClient, Role, OrderStatus } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting seeding...");
-
   // ============================
   // User Types
   // ============================
-  const proType = await prisma.userType.create({
-    data: { code: "PRO", label: "Professionnel", tva_rate: 20.0 },
+  console.log("🌱🌱🌱 Starting seeding UserType...🌱🌱");
+
+  await prisma.userType.createMany({
+    data: [
+      { code: "PRO", label: "Professionnel", tva_rate: 20.0 },
+      { code: "PART", label: "Particulier", tva_rate: 20.0 },
+      { code: "ASSO", label: "Association", tva_rate: 5.5 },
+      { code: "ENT", label: "Entreprise", tva_rate: 20.0 },
+      { code: "AUTOENT", label: "Auto Entrepreneur", tva_rate: 20.0 },
+    ],
+    skipDuplicates: true,
   });
-  const particulierType = await prisma.userType.create({
-    data: { code: "PART", label: "Particulier", tva_rate: 20.0 },
+  console.log("✅ Seeding UserType Done ✅");
+
+  const userTypes = await prisma.userType.findMany();
+
+  // ============================
+  // Users (10)
+  // ============================
+  console.log("🌱🌱🌱 Starting seeding Users...🌱🌱");
+
+  await prisma.user.createMany({
+    data: Array.from({ length: 10 }).map((_, i) => ({
+      firstname: `User${i + 1}`,
+      lastname: `Last${i + 1}`,
+      email: `user${i + 1}@example.com`,
+      password: "password",
+      role: i === 0 ? Role.admin : Role.member,
+      user_type_id: userTypes[i % userTypes.length].id,
+    })),
+    skipDuplicates: true,
   });
-  const associationType = await prisma.userType.create({
-    data: { code: "Asso", label: "Association", tva_rate: 5.5 },
+  console.log("✅ Seeding Users Done ✅");
+
+  const users = await prisma.user.findMany();
+
+  // ============================
+  // Locations (10)
+  // ============================
+  console.log("🌱🌱🌱 Starting seeding Locations...🌱🌱");
+
+  await prisma.location.createMany({
+    data: Array.from({ length: 10 }).map((_, i) => ({
+      name: `Location ${i + 1}`,
+      latitude: 40.0 + i,
+      longitude: -70.0 - i,
+    })),
+    skipDuplicates: true,
   });
-  const entrepriseType = await prisma.userType.create({
-    data: { code: "Ent", label: "Entreprise", tva_rate: 20 },
+  console.log("✅ Seeding Locations Done ✅");
+
+  const locations = await prisma.location.findMany();
+
+  // ============================
+  // Products (20 arbres)
+  // ============================
+  console.log("🌱🌱🌱 Starting seeding Products...🌱🌱");
+
+  await prisma.product.createMany({
+    data: Array.from({ length: 20 }).map((_, i) => ({
+      name: `Arbre ${i + 1}`,
+      slug: `arbre-${i + 1}`,
+      price: 50 + i * 10, // prix progressif
+      description: `Description arbre ${i + 1}`,
+      image_urls: [`arbre${i + 1}.jpg`],
+      stock: 100 + i * 10,
+      scientific_name: `Species ${i + 1}`,
+      carbon: 10 + i,
+    })),
+    skipDuplicates: true,
   });
-  const autoEntrepreneurType = await prisma.userType.create({
-    data: { code: "AutoEnt", label: "Auto Entrepreneur", tva_rate: 20 },
+  console.log("✅ Seeding Products Done ✅");
+
+  const products = await prisma.product.findMany();
+
+  // Relier chaque produit à une location
+  await prisma.productLocation.createMany({
+    data: products.map((p, i) => ({
+      product_id: p.id,
+      location_id: locations[i % locations.length].id,
+    })),
+    skipDuplicates: true,
   });
 
   // ============================
-  // Users
+  // Orders (20 commandes)
   // ============================
-  const adminUser = await prisma.user.create({
-    data: {
-      firstname: "Admin",
-      lastname: "Admin",
-      email: "admin@admin.com",
-      entity_name: "GreenRoots",
-      password: "test",
-      role: Role.admin,
-      userType: { connect: { id: proType.id } },
-    },
-  });
+  console.log("🌱🌱🌱 Starting seeding Orders...🌱🌱");
 
-  const memberUser = await prisma.user.create({
-    data: {
-      firstname: "Bob",
-      lastname: "Member",
-      email: "bob@bob.com",
-      password: "test",
-      role: Role.member,
-      userType: { connect: { id: particulierType.id } },
-    },
-  });
-
-  const entrepriseUser = await prisma.user.create({
-    data: {
-      firstname: "Guillaume",
-      lastname: "Ferard",
-      email: "guillaume@guillaume.com",
-      entity_name: "O'Clock",
-      password: "test",
-      role: Role.member,
-      userType: { connect: { id: entrepriseType.id } },
-    },
-  });
-
-  const assoUser = await prisma.user.create({
-    data: {
-      firstname: "Claire",
-      lastname: "Asso",
-      email: "claire@asso.com",
-      entity_name: "Planète Verte",
-      password: "test",
-      role: Role.member,
-      userType: { connect: { id: associationType.id } },
-    },
-  });
-
-  const autoEntUser = await prisma.user.create({
-    data: {
-      firstname: "Julien",
-      lastname: "Auto",
-      email: "julien@auto.com",
-      entity_name: "EcoTree Services",
-      password: "test",
-      role: Role.member,
-      userType: { connect: { id: autoEntrepreneurType.id } },
-    },
-  });
-
-  // ============================
-  // Locations
-  // ============================
-  const location1 = await prisma.location.create({
-    data: { name: "Parc National", latitude: 45.764, longitude: 4.8357 },
-  });
-
-  const location2 = await prisma.location.create({
-    data: { name: "Jardin Botanique", latitude: 48.8566, longitude: 2.3522 },
-  });
-
-  // ============================
-  // Products
-  // ============================
-  const arbre1 = await prisma.product.create({
-    data: {
-      name: "Chêne",
-      slug: "chene",
-      price: 49.99,
-      description: "Un arbre robuste et majestueux.",
-      image_urls: ["chene1.jpg", "chene2.jpg"],
-      stock: 1000,
-      scientific_name: "Quercus robur",
-      carbon: 12.5,
-      productLocations: { create: [{ location_id: location1.id }] },
-    },
-  });
-
-  const arbre2 = await prisma.product.create({
-    data: {
-      name: "Érable",
-      slug: "erable",
-      price: 39.99,
-      description: "Un arbre magnifique aux feuilles colorées.",
-      image_urls: ["erable1.jpg", "erable2.jpg"],
-      stock: 1000,
-      scientific_name: "Acer saccharum",
-      carbon: 9.2,
-      productLocations: { create: [{ location_id: location2.id }] },
-    },
-  });
-
-  // ============================
-  // Orders (10 commandes)
-  // ============================
-  const users = [adminUser, memberUser, entrepriseUser, assoUser, autoEntUser];
-  const products = [arbre1, arbre2];
-
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const user = users[i % users.length];
-    const productMix = [
-      {
-        product: products[0],
-        quantity: Math.floor(Math.random() * 50) + 10, // entre 10 et 60
-      },
-      {
-        product: products[1],
-        quantity: Math.floor(Math.random() * 30) + 5, // entre 5 et 35
-      },
-    ];
 
-    const total = productMix.reduce(
-      (sum, item) => sum + item.quantity * Number(item.product.price),
+    // Sélectionner entre 3 et 5 produits différents
+    const nbItems = 3 + (i % 3); // 3, 4 ou 5
+    const chosenProducts = products.slice(i, i + nbItems);
+
+    // Construire les items avec quantités progressives
+    const items = chosenProducts.map((product, idx) => ({
+      quantity: 10 + idx + i, // quantités progressives
+      unit_price: product.price,
+      product: { connect: { id: product.id } },
+    }));
+
+    // Calculer le total
+    const total = items.reduce(
+      (sum, item) => sum + item.quantity * Number(item.unit_price),
       0
     );
 
     await prisma.order.create({
       data: {
         status: i % 2 === 0 ? OrderStatus.paid : OrderStatus.pending,
-        total: total,
+        total,
         user: { connect: { id: user.id } },
-        items: {
-          create: productMix.map((item) => ({
-            quantity: item.quantity,
-            unit_price: item.product.price,
-            product: { connect: { id: item.product.id } },
-          })),
-        },
+        items: { create: items },
       },
     });
   }
 
-  console.log("✅ 10 Orders seeding done");
+  console.log("✅ Seeding Orders Done ✅");
+
   console.log("🚀🚀🚀 Seeding finished 🚀🚀🚀");
 }
 
