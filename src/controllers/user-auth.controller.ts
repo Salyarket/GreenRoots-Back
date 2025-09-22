@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import AuthController from "./auth.controllers.js";
+import AuthController from "./auth.controller.js";
 import { z } from "zod";
 
 const prisma = new PrismaClient();
