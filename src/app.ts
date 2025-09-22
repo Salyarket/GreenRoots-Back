@@ -7,13 +7,19 @@ import { setupSwagger } from "./swagger/swagger_config.js";
 
 import cors from "cors";
 
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET manquant dans .env");
+}
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL manquant dans .env");
+}
 
 if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET manquant dans .env");
-  }
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL manquant dans .env");
-  }
+  throw new Error("JWT_SECRET manquant dans .env");
+}
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL manquant dans .env");
+}
 
 // // Autoriser les requêtes cross-origin
 app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
