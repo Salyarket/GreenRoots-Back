@@ -19,7 +19,9 @@
 
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "noImplicitAny": true,
 
+    "types": ["node", "express"], 
     /* typage de multer */
     "typeRoots": ["./node_modules/@types", "./src/types"]
   }
