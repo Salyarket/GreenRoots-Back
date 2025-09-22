@@ -7,9 +7,14 @@ import { prisma } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 import BaseController from "./base.controller.js";
 
+const orderRelation = {
+  user: true,
+  items: { include: { product: true } },
+};
+
 class OrderController extends BaseController {
   constructor() {
-    super(prisma.order, "order");
+    super(prisma.order, "order", createOrderSchema, orderRelation);
   }
 
   // CREATE an order
@@ -17,7 +22,7 @@ class OrderController extends BaseController {
     try {
       const data = await createOrderSchema.parseAsync(req.body);
 
-      const createdOrder = await prisma.order.create({
+      const createdOrder = await this.model.create({
         data: {
           status: data.status,
           total: data.total,
@@ -37,12 +42,12 @@ class OrderController extends BaseController {
       const order_id = parseInt(req.params.id);
       const data = await updateOrderSchema.parseAsync(req.body);
 
-      const foundOrder = await prisma.order.findUnique({
+      const foundOrder = await this.model.findUnique({
         where: { id: order_id },
       });
       if (!foundOrder) throw new NotFoundError(`Order not found: ${order_id}`);
 
-      const updatedOrder = await prisma.order.update({
+      const updatedOrder = await this.model.update({
         where: { id: order_id },
         data: { ...data, updated_at: new Date() },
       });
@@ -61,9 +66,9 @@ class OrderController extends BaseController {
   ) => {
     try {
       const user_id = parseInt(req.params.id);
-      const orders = await prisma.order.findMany({
+      const orders = await this.model.findMany({
         where: { user_id },
-        include: { items: { include: { product: true } } },
+        include: this.relations,
       });
       res.json(orders);
     } catch (error) {
@@ -75,9 +80,9 @@ class OrderController extends BaseController {
   getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user_id = (req as any).userId; // injecté par le middleware JWT
-      const orders = await prisma.order.findMany({
+      const orders = await this.model.findMany({
         where: { user_id },
-        include: { items: { include: { product: true } } },
+        include: this.relations,
       });
       res.json(orders);
     } catch (error) {
