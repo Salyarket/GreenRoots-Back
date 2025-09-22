@@ -1,9 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ZodType } from "zod";
+import { ConflictError, UnauthorizedError } from "../lib/errors.js";
 
 export default class AuthController {
   model: PrismaClient["user"]; // modèle prisma user
@@ -17,7 +18,7 @@ export default class AuthController {
   }
 
   // 1. FUNCTION REGISTER
-  register = async (req: Request, res: Response) => {
+  register = async (req: Request, res: Response, next: NextFunction) => {
     const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
 
     const { email, password } = validatedData as {
@@ -40,23 +41,17 @@ export default class AuthController {
       });
       return res.json({ message: "New member created" });
     } catch (error) {
-      // vérifier unicité des données
-      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // code P2002 : unique constraint failed
         if (error.code === "P2002") {
-          return res.json({ error: "Uniqueness problem" });
+          throw new ConflictError(`Uniqueness problem`);
         }
       }
-      console.error("Registration error : ", error);
-      return res.json({
-        error: "Registration failed. Please try again later.",
-      });
+      next(error);
     }
   };
 
   // 2. FUNCTION LOGIN
-  login = async (req: Request, res: Response) => {
+  login = async (req: Request, res: Response, next: NextFunction) => {
     const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
 
     const { email, password } = validatedData as {
@@ -71,13 +66,13 @@ export default class AuthController {
       });
       // si non trouvé -> erreur
       if (!user) {
-        return res.json({ error: "Invalid information" });
+        throw new UnauthorizedError("Invalid information");
       }
       // si trouvé -> comparer le pwd avec celui en bdd
       else {
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-          return res.json({ error: "Invalid information" });
+          throw new UnauthorizedError("Invalid information");
         }
       }
       //  si le pwd match générer un jwt
@@ -91,11 +86,7 @@ export default class AuthController {
       );
       return res.json({ message: "Login successful" });
     } catch (error) {
-      console.log(error);
-      return res.json({
-        error:
-          "The server encountred an internal error. Please try again later",
-      });
+      next(error);
     }
   };
 }
