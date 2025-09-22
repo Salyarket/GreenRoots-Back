@@ -1,5 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ZodType, ZodObject } from "zod";
+import { ConflictError, NotFoundError } from "../lib/errors.js";
+import { Prisma } from "@prisma/client";
 
 export default class BaseController {
   model: any;
@@ -12,17 +14,16 @@ export default class BaseController {
     this.schema = schema;
   }
 
-  getAll = async (req: Request, res: Response) => {
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const items = await this.model.findMany();
       res.json(items);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Failed to fetch ${this.modelName}` });
+      next(error); //global-error-handler se charge de la gestion d'erreur
     }
   };
 
-  getById = async (req: Request, res: Response) => {
+  getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
       const item = await this.model.findUnique({
@@ -30,19 +31,15 @@ export default class BaseController {
           id: itemId,
         },
       });
-      if (!item) {
-        return res
-          .status(404)
-          .json({ error: `This ${this.modelName} does not exist` });
-      }
+      if (!item)
+        throw new NotFoundError(`This ${this.modelName} does not exist`);
       res.json(item);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Failed to fetch ${this.modelName}` });
+      next(error);
     }
   };
 
-  create = async (req: Request, res: Response) => {
+  create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validatedData = this.schema
         ? this.schema.parse(req.body)
@@ -52,12 +49,16 @@ export default class BaseController {
       });
       res.status(201).json(newItem);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Failed to create ${this.modelName}` });
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ConflictError(`${this.modelName} already exists`);
+        }
+      }
+      next(error);
     }
   };
 
-  update = async (req: Request, res: Response) => {
+  update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
       const validatedData =
@@ -71,17 +72,20 @@ export default class BaseController {
         data: validatedData,
       });
       res.json(updatedItem);
-    } catch (error: any) {
-      if (error.code === "P2025") {
-        return res
-          .status(404)
-          .json({ error: `${this.modelName} is not found` });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new NotFoundError(`${this.modelName} not found`);
+        }
+        if (error.code === "P2002") {
+          throw new ConflictError(`${this.modelName} already exists`);
+        }
       }
-      res.status(500).json({ error: `Failed to update ${this.modelName}` });
+      next(error);
     }
   };
 
-  deleteById = async (req: Request, res: Response) => {
+  deleteById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
       const deletedItem = await this.model.delete({
@@ -92,13 +96,13 @@ export default class BaseController {
       res.json({
         message: `${this.modelName} deleted successfully`,
       });
-    } catch (error: any) {
-      if (error.code === "P2025") {
-        return res
-          .status(404)
-          .json({ error: `${this.modelName} is not found` });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new NotFoundError(`${this.modelName} not found`);
+        }
       }
-      res.status(500).json({ error: `Failed to delete ${this.modelName}` });
+      next(error);
     }
   };
 }

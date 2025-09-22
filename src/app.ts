@@ -4,6 +4,9 @@ dotenv.config();
 import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
 import { router as apiRouter } from "./routers/index.router.js";
 import { setupSwagger } from "./swagger/swagger_config.js";
+import { globalErrorHandler } from "./middlewares/global-error-handler.js";
+
+import cors from "cors";
 
 import cors from "cors";
 
@@ -31,3 +34,4 @@ app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 
 setupSwagger(app);
 app.use("/", apiRouter);
+app.use(globalErrorHandler); // Global error middleware

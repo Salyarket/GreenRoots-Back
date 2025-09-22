@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { createUserSchema, updateUserSchema } from "../schema/user.schema.js";
+import { createUserSchema, updateUserSchema } from "../schemas/user.schema.js";
 import { NotFoundError } from "../lib/errors.js";
 import { prisma } from "../models/index.js";
 import { Request, Response } from "express";
@@ -47,9 +47,9 @@ export async function createUser(req: Request, res: Response) {
       password: hashedPassword,
       role: data.role,
       entity_name: data.entity_name,
-      userType: { connect: { id: data.userTypeId }}
+      userType: { connect: { id: data.userTypeId } },
     },
-    include: { userType: true }
+    include: { userType: true },
   });
   // suppression du mdp avant retour
   delete (createdUser as any).password;
@@ -81,7 +81,7 @@ export async function updateUser(req: Request, res: Response) {
   const updatedUser = await prisma.user.update({
     where: { id: user_id },
     data: updateData,
-    include: { userType: true }
+    include: { userType: true },
   });
   res.json(updatedUser);
 }
@@ -95,7 +95,7 @@ export async function deleteUser(req: Request, res: Response) {
   res.status(204).end();
 }
 
-// GET mon profil 
+// GET mon profil
 export async function getMe(req: Request, res: Response) {
   const userId = (req as any).userId; // injecté par le middleware JWT
 
@@ -125,7 +125,7 @@ export async function updateMe(req: Request, res: Response) {
 
   const updateData: any = { ...data, updated_at: new Date() };
 
-  // Hashage si password fourni 
+  // Hashage si password fourni
   if (data.password) {
     updateData.password = await bcrypt.hash(data.password, 10);
   }
@@ -134,7 +134,6 @@ export async function updateMe(req: Request, res: Response) {
   if (role !== "admin") {
     delete updateData.role;
     delete updateData.userTypeId;
-    
   } else if (data.userTypeId) {
     updateData.user_type_id = data.userTypeId;
     delete updateData.userTypeId;

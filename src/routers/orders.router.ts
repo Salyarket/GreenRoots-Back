@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
-import { 
-    getAllOrders, 
-    getOneOrder, 
-    createOrder, 
-    updateOrder, 
-    deleteOrder,
-    getMyOrders,
-    getOrdersByUserId
-  } from "../controllers/order.controller.js";
+import {
+  getAllOrders,
+  getOneOrder,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  getMyOrders,
+  getOrdersByUserId,
+} from "../controllers/order.controller.js";
 
-export const router = Router();
+const router = Router();
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ export const router = Router();
  *         description: Liste des commandes
  */
 // Récup toutes les commandes (admin only, back-office)
-router.get("/orders", checkRoles(["admin"]), getAllOrders);
+router.get("/", checkRoles(["admin"]), getAllOrders);
 
 /**
  * @swagger
@@ -48,7 +48,7 @@ router.get("/orders", checkRoles(["admin"]), getAllOrders);
  *         description: Commande introuvable
  */
 // voir commande complète avec user + type + items
-router.get("/orders/:id", checkRoles(["admin"]), getOneOrder);
+router.get("/:id", checkRoles(["admin"]), getOneOrder);
 
 /**
  * @swagger
@@ -69,10 +69,15 @@ router.get("/orders/:id", checkRoles(["admin"]), getOneOrder);
  *         description: Liste des commandes de l’utilisateur
  */
 // voir commandes d’un utilisateur précis (admin only)
-router.get("/users/:id/orders", checkRoles(["admin"]), getOrdersByUserId, (req, res) => {
-  const userId = req.params.id;
-  res.json({ message: `Commandes de l’utilisateur ${userId}` });
-});
+router.get(
+  "/users/:id/orders",
+  checkRoles(["admin"]),
+  getOrdersByUserId,
+  (req, res) => {
+    const userId = req.params.id;
+    res.json({ message: `Commandes de l’utilisateur ${userId}` });
+  }
+);
 
 /**
  * @swagger
@@ -126,7 +131,7 @@ router.get("/me/orders", checkRoles(["member"]), getMyOrders, (req, res) => {
  *         description: Requête invalide
  */
 // créer une commande depuis le panier (member only)
-router.post("/orders", checkRoles(["member"]), createOrder);
+router.post("/", checkRoles(["member"]), createOrder);
 
 /**
  * @swagger
@@ -161,7 +166,7 @@ router.post("/orders", checkRoles(["member"]), createOrder);
  *         description: Commande introuvable
  */
 // modifier le statut (admin only : pending > paid/cancelled)
-router.patch("/orders/:id", checkRoles(["admin"]), updateOrder);
+router.patch("/:id", checkRoles(["admin"]), updateOrder);
 
 /**
  * @swagger
@@ -184,5 +189,6 @@ router.patch("/orders/:id", checkRoles(["admin"]), updateOrder);
  *         description: Commande introuvable
  */
 // Supprimer une commande (admin only)
-router.delete("/orders/:id", checkRoles(["admin"]), deleteOrder);
+router.delete("/:id", checkRoles(["admin"]), deleteOrder);
 
+export default router;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import userTypeController from "../controllers/user-type.controllers.js";
+import userTypeController from "../controllers/user-type.controller.js";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
 
 const router = Router();
