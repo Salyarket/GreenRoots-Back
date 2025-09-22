@@ -46,10 +46,10 @@ const userSchema = z.object({
     .optional(),
 });
 
-class UserController extends AuthController {
+class UserAuthController extends AuthController {
   constructor() {
     super(prisma, "users", userSchema);
   }
 }
 
-export default new UserController();
+export default new UserAuthController();
