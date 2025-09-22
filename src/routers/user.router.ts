@@ -1,16 +1,8 @@
 import { Router } from "express";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
-import {
-  getAllUsers,
-  getOneUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  getMe,
-  updateMe
-} from "../controllers/user.controller.js";
+import userController from "../controllers/user.controller.js";
 
-export const router = Router();
+const router = Router();
 
 /**
  * @swagger
@@ -24,7 +16,7 @@ export const router = Router();
  *       200:
  *         description: Liste des utilisateurs
  */
-router.get("/users", checkRoles(["admin"]), getAllUsers);
+router.get("/", checkRoles(["admin"]), userController.getAll);
 
 /**
  * @swagger
@@ -46,7 +38,7 @@ router.get("/users", checkRoles(["admin"]), getAllUsers);
  *       404:
  *         description: Utilisateur introuvable
  */
-router.get("/users/:id", checkRoles(["admin"]), getOneUser);
+router.get("/:id", checkRoles(["admin"]), userController.getById);
 
 /**
  * @swagger
@@ -90,7 +82,7 @@ router.get("/users/:id", checkRoles(["admin"]), getOneUser);
  *       400:
  *         description: Requête invalide
  */
-router.post("/users", checkRoles(["admin"]), createUser);
+router.post("/", checkRoles(["admin"]), userController.createUser);
 
 /**
  * @swagger
@@ -134,7 +126,7 @@ router.post("/users", checkRoles(["admin"]), createUser);
  *       404:
  *         description: Utilisateur introuvable
  */
-router.patch("/users/:id", checkRoles(["admin"]), updateUser);
+router.patch("/:id", checkRoles(["admin"]), userController.updateUser);
 
 /**
  * @swagger
@@ -156,7 +148,7 @@ router.patch("/users/:id", checkRoles(["admin"]), updateUser);
  *       404:
  *         description: Utilisateur introuvable
  */
-router.delete("/users/:id", checkRoles(["admin"]), deleteUser);
+router.delete("/:id", checkRoles(["admin"]), userController.deleteById);
 
 /**
  * @swagger
@@ -170,7 +162,7 @@ router.delete("/users/:id", checkRoles(["admin"]), deleteUser);
  *       200:
  *         description: Profil de l’utilisateur connecté
  */
-router.get("/me", checkRoles(["member", "admin"]), getMe);
+router.get("/me", checkRoles(["member", "admin"]), userController.getMe);
 
 /**
  * @swagger
@@ -203,4 +195,6 @@ router.get("/me", checkRoles(["member", "admin"]), getMe);
  *       404:
  *         description: Utilisateur introuvable
  */
-router.patch("/me", checkRoles(["member", "admin"]), updateMe);
+router.patch("/me", checkRoles(["member", "admin"]), userController.updateMe);
+
+export default router;

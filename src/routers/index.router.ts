@@ -3,6 +3,7 @@ import authRouter from "./auth.router.js";
 import locationRouter from "./location.router.js";
 import userTypesRouter from "./user-type.router.js";
 import orderRouter from "./orders.router.js";
+import userRouter from "./user.router.js";
 
 export const router = Router();
 
@@ -17,3 +18,5 @@ router.use("/locations", locationRouter);
 router.use("/user-types", userTypesRouter);
 
 router.use("/orders", orderRouter);
+
+router.use("/users", userRouter);
