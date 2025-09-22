@@ -16,6 +16,69 @@ const options: swaggerJsdoc.Options = {
         description: "Serveur local",
       },
     ],
+    components: {
+      schemas: {
+        Location: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            name: {
+              type: "string",
+              example: "Amazonie",
+            },
+            latitude: {
+              type: "number",
+              format: "float",
+              example: -3.465305,
+            },
+            longitude: {
+              type: "number",
+              format: "float",
+              example: -62.215881,
+            },
+          },
+          required: ["name", "latitude", "longitude"],
+        },
+        UserType: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            code: {
+              type: "string",
+              example: "PRO",
+              description: "Code unique du type d'utilisateur",
+            },
+            label: {
+              type: "string",
+              example: "Professionnel",
+              description: "Libellé du type d'utilisateur",
+            },
+            tva_rate: {
+              type: "number",
+              format: "float",
+              example: 20.0,
+              description: "Taux de TVA appliqué",
+            },
+          },
+          required: ["code", "label", "tva_rate"],
+        },
+      },
+    },
+    components:{
+      securitySchemes:{
+        bearerAuth:{
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./src/routers/*.ts"], // chemin vers fichiers de routes
 };

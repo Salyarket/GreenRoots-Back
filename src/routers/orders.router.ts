@@ -167,7 +167,7 @@ router.patch("/orders/:id", checkRoles(["admin"]), updateOrder);
  * @swagger
  * /orders/{id}:
  *   delete:
- *     summary: Supprimer une commande
+ *     summary: Supprimer une commande (admin only)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
