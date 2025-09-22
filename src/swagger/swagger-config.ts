@@ -69,10 +69,8 @@ const options: swaggerJsdoc.Options = {
           required: ["code", "label", "tva_rate"],
         },
       },
-    },
-    components:{
-      securitySchemes:{
-        bearerAuth:{
+      securitySchemes: {
+        bearerAuth: {
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT",
