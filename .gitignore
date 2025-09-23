@@ -1,4 +1,4 @@
 node_modules
 .env
-docker-compose.override.yml
 .DS_Store
+uploads/

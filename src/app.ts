@@ -18,6 +18,9 @@ app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 // // Body parser pour récupérer les body "application/json" dans req.body
 app.use(express.json());
 
+// Pour parser form-urlencoded (formulaires HTML classiques)
+app.use(express.urlencoded({ extended: true }));
+
 setupSwagger(app);
 
 app.use("/", apiRouter);
