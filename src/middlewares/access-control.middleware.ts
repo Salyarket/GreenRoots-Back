@@ -36,7 +36,7 @@ export function checkRoles(roles: string[]) {
       (req as any).userRole = decoded.role;
 
       next();
-    } catch (err) {
+    } catch {
       return res.status(401).json({ error: "Token invalide ou expiré" });
     }
   };
