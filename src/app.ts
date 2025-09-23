@@ -11,13 +11,7 @@ import cors from "cors";
 // Créer une app Express
 export const app = express();
 
-if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET manquant dans .env");
-}
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL manquant dans .env");
-}
-
+//! DEVELOPPEMENT SUPPRIMER PLUS TARD
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET manquant dans .env");
 }
@@ -26,6 +20,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Autoriser les requêtes cross-origin
+//! sécurité au moment de connecter le back avec le front
 app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 
 // Cookie parser
