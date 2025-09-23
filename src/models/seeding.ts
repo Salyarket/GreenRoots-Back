@@ -35,6 +35,7 @@ async function main() {
         email: "admin@admin.com",
         password:
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.admin,
         user_type_id: 1,
       },
@@ -44,6 +45,7 @@ async function main() {
         email: "member@member.com",
         password:
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 2,
       },
@@ -53,6 +55,7 @@ async function main() {
         email: "claire@example.com",
         password:
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 3,
       },
@@ -62,6 +65,7 @@ async function main() {
         email: "guillaume@ferard.com",
         password:
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 5,
       },

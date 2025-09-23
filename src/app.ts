@@ -28,6 +28,9 @@ app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 
 app.use(express.json());
 
+// Pour parser form-urlencoded (formulaires HTML classiques)
+app.use(express.urlencoded({ extended: true }));
+
 setupSwagger(app);
 
 app.use("/", apiRouter);

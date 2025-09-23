@@ -3,7 +3,7 @@
 ## Initialisation
 
 1.  !!!OUVRIR VOTRE DOCKER APPLICATION!!!
-2.  Tapper dans le terminal pour supprimer les anciennes images/conteneurs : "- docker compose down -v --rmi all"
+2.  Tapper dans le terminal pour supprimer les anciennes images/conteneurs : "docker compose down -v --rmi all"
 3.  créer un .env à la racine du projet et copier-coller à partir de .env.example
 
 4.  Option 1 : **Linux/WSL/OSX**:
@@ -21,7 +21,7 @@
         "
 
 5.  Ouvrir un terminal et tappez :
-    Option 1 : - si vous utilisez LINUX/OSX/WSL : - tappez : "chmod +x ./init.sh" puis tappez ."/init.sh"
+    Option 1 : - si vous utilisez LINUX/OSX/WSL : - tappez : "chmod +x ./init.sh" puis tappez "./init.sh"
     Option 2 : - si vous utilisez WINDOWS : - tappez : "./init.bat"
 
 ---
