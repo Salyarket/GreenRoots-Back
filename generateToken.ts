@@ -3,22 +3,20 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const secret = process.env.JWT_SECRET;
-if (!secret) {
-  throw new Error("JWT_SECRET manquant dans .env");
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET manquant dans le .env");
 }
 
-const tokenAdmin = jwt.sign(
-  { userId: 1, role: "admin" },
-  secret,
+// Récupère les arguments passés en ligne de commande
+// Exemple : npx tsx generateToken.ts 1 admin OU npx tsx generateToken.ts 2 member
+const userId = parseInt(process.argv[2] || "1", 10);
+const role = process.argv[3] || "admin"; // admin par défaut
+
+const token = jwt.sign(
+  { userId, role },
+  process.env.JWT_SECRET,
   { expiresIn: "1h" }
 );
 
-const tokenMember = jwt.sign(
-  { userId: 2, role: "member" },
-  secret,
-  { expiresIn: "1h" }
-);
-
-console.log("Admin:", tokenAdmin);
-console.log("Member:", tokenMember);
+console.log(`Generated token for userId=${userId}, role=${role}:\n`);
+console.log(token);
