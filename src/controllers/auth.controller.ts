@@ -84,7 +84,7 @@ export default class AuthController {
         secret,
         { expiresIn: "24h" } // A REVOIR POUR PROD -> 1H
       );
-      return res.json({ message: "Login successful" });
+      return res.json({ message: "Login successful", jwtToken });
     } catch (error) {
       next(error);
     }
