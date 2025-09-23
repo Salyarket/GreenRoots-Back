@@ -69,6 +69,13 @@ const options: swaggerJsdoc.Options = {
           required: ["code", "label", "tva_rate"],
         },
       },
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
     },
   },
   apis: ["./src/routers/*.ts"], // chemin vers fichiers de routes

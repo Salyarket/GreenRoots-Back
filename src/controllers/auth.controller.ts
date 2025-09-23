@@ -80,7 +80,7 @@ export default class AuthController {
       if (!secret) throw new Error("JWT_SECRET is not defined");
 
       const jwtToken = jwt.sign(
-        { userId: user.id, email: user.email },
+        { userId: user.id, email: user.email, role: user.role },
         secret,
         { expiresIn: "24h" } // A REVOIR POUR PROD -> 1H
       );

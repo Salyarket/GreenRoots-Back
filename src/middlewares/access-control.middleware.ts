@@ -21,10 +21,7 @@ export function checkRoles(roles: string[]) {
 
     try {
       // vérif et décode le jwt
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET!
-      ) as MyJWTPayload;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as MyJWTPayload;
 
       // vérif du rôle
       if (!roles.includes(decoded.role)) {

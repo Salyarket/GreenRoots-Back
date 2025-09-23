@@ -1,6 +1,12 @@
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.JWT_SECRET || "changeme";
+dotenv.config();
+
+const secret = process.env.JWT_SECRET;
+if (!secret) {
+  throw new Error("JWT_SECRET manquant dans .env");
+}
 
 const tokenAdmin = jwt.sign(
   { userId: 1, role: "admin" },
@@ -16,5 +22,3 @@ const tokenMember = jwt.sign(
 
 console.log("Admin:", tokenAdmin);
 console.log("Member:", tokenMember);
-
-// lancer "node --loader ts-node/esm generateToken.ts"

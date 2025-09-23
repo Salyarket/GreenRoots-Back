@@ -33,7 +33,9 @@ async function main() {
         firstname: "admin",
         lastname: "admin",
         email: "admin@admin.com",
-        password: "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.admin,
         user_type_id: 1,
       },
@@ -41,7 +43,9 @@ async function main() {
         firstname: "member",
         lastname: "member",
         email: "member@member.com",
-        password: "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 2,
       },
@@ -49,7 +53,9 @@ async function main() {
         firstname: "Claire",
         lastname: "Dupont",
         email: "claire@example.com",
-        password: "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 3,
       },
@@ -57,7 +63,9 @@ async function main() {
         firstname: "guillaume",
         lastname: "ferard",
         email: "guillaume@ferard.com",
-        password: "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+
         role: Role.member,
         user_type_id: 5,
       },

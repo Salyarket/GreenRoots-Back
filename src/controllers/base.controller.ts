@@ -7,16 +7,25 @@ export default class BaseController {
   model: any;
   modelName: string;
   schema?: ZodType;
+  relations?: any;
 
-  constructor(model: any, modelName: string, schema?: ZodType) {
+  constructor(
+    model: any,
+    modelName: string,
+    schema?: ZodType,
+    relations?: any
+  ) {
     this.model = model; // va récuperer prisma.location, prisma.order, etc
     this.modelName = modelName;
     this.schema = schema;
+    this.relations = relations; //stocke includes
   }
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const items = await this.model.findMany();
+      const items = await this.model.findMany({
+        include: this.relations,
+      });
       res.json(items);
     } catch (error) {
       next(error); //global-error-handler se charge de la gestion d'erreur
@@ -30,6 +39,7 @@ export default class BaseController {
         where: {
           id: itemId,
         },
+        include: this.relations,
       });
       if (!item)
         throw new NotFoundError(`This ${this.modelName} does not exist`);

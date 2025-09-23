@@ -23,7 +23,7 @@ const router = Router();
  *      400:
  *        description: Paramètres de requête invalides
  */
-router.get("/", userTypeController.getAll);
+router.get("/", checkRoles(["admin"]), userTypeController.getAll);
 
 /**
  * @swagger
