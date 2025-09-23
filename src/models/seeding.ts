@@ -28,14 +28,44 @@ async function main() {
   console.log("🌱🌱🌱 Starting seeding Users...🌱🌱");
 
   await prisma.user.createMany({
-    data: Array.from({ length: 10 }).map((_, i) => ({
-      firstname: `User${i + 1}`,
-      lastname: `Last${i + 1}`,
-      email: `user${i + 1}@example.com`,
-      password: "password",
-      role: i === 0 ? Role.admin : Role.member,
-      user_type_id: userTypes[i % userTypes.length].id,
-    })),
+    data: [
+      {
+        firstname: "admin",
+        lastname: "admin",
+        email: "admin@admin.com",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        role: Role.admin,
+        user_type_id: 1,
+      },
+      {
+        firstname: "member",
+        lastname: "member",
+        email: "member@member.com",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        role: Role.member,
+        user_type_id: 2,
+      },
+      {
+        firstname: "Claire",
+        lastname: "Dupont",
+        email: "claire@example.com",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        role: Role.member,
+        user_type_id: 3,
+      },
+      {
+        firstname: "guillaume",
+        lastname: "ferard",
+        email: "guillaume@ferard.com",
+        password:
+          "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
+        role: Role.member,
+        user_type_id: 5,
+      },
+    ],
     skipDuplicates: true,
   });
   console.log("✅ Seeding Users Done ✅");
@@ -48,11 +78,11 @@ async function main() {
   console.log("🌱🌱🌱 Starting seeding Locations...🌱🌱");
 
   await prisma.location.createMany({
-    data: Array.from({ length: 10 }).map((_, i) => ({
-      name: `Location ${i + 1}`,
-      latitude: 40.0 + i,
-      longitude: -70.0 - i,
-    })),
+    data: [
+      { name: "Terrain Nord", latitude: 48.8566, longitude: 2.3522 },
+      { name: "Terrain Sud", latitude: 43.2965, longitude: 5.3698 },
+      { name: "Terrain Est", latitude: 45.764, longitude: 4.8357 },
+    ],
     skipDuplicates: true,
   });
   console.log("✅ Seeding Locations Done ✅");
@@ -65,30 +95,70 @@ async function main() {
   console.log("🌱🌱🌱 Starting seeding Products...🌱🌱");
 
   await prisma.product.createMany({
-    data: Array.from({ length: 20 }).map((_, i) => ({
-      name: `Arbre ${i + 1}`,
-      slug: `arbre-${i + 1}`,
-      price: 50 + i * 10, // prix progressif
-      description: `Description arbre ${i + 1}`,
-      image_urls: [`arbre${i + 1}.jpg`],
-      stock: 100 + i * 10,
-      scientific_name: `Species ${i + 1}`,
-      carbon: 10 + i,
-    })),
+    data: [
+      {
+        name: "Chêne",
+        slug: "chene",
+        price: 100,
+        description: "Un grand arbre robuste",
+        image_urls: ["chene.jpg"],
+        stock: 50,
+        scientific_name: "Quercus robur",
+        carbon: 30,
+      },
+      {
+        name: "Érable",
+        slug: "erable",
+        price: 80,
+        description: "Arbre aux feuilles rouges à l’automne",
+        image_urls: ["erable.jpg"],
+        stock: 40,
+        scientific_name: "Acer saccharum",
+        carbon: 25,
+      },
+      {
+        name: "Olivier",
+        slug: "olivier",
+        price: 120,
+        description: "Arbre méditerranéen produisant des olives",
+        image_urls: ["olivier.jpg"],
+        stock: 30,
+        scientific_name: "Olea europaea",
+        carbon: 20,
+      },
+      {
+        name: "Pin",
+        slug: "pin",
+        price: 70,
+        description: "Arbre à aiguilles résineux",
+        image_urls: ["pin.jpg"],
+        stock: 60,
+        scientific_name: "Pinus sylvestris",
+        carbon: 15,
+      },
+    ],
     skipDuplicates: true,
   });
+
   console.log("✅ Seeding Products Done ✅");
 
   const products = await prisma.product.findMany();
 
-  // Relier chaque produit à une location
+  // ============================
+  // Product-Location relations
+  // ============================
+  console.log("🌱 Linking Products to Locations...");
   await prisma.productLocation.createMany({
-    data: products.map((p, i) => ({
-      product_id: p.id,
-      location_id: locations[i % locations.length].id,
-    })),
+    data: [
+      { product_id: products[0].id, location_id: locations[0].id },
+      { product_id: products[1].id, location_id: locations[1].id },
+      { product_id: products[2].id, location_id: locations[2].id },
+      { product_id: products[3].id, location_id: locations[0].id },
+    ],
     skipDuplicates: true,
   });
+
+  console.log("✅ Product-Location relations seeded");
 
   // ============================
   // Orders (20 commandes)

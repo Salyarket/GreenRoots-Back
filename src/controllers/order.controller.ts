@@ -85,6 +85,7 @@ class OrderController extends BaseController {
         include: this.relations,
       });
       res.json(orders);
+      // si pas d'order -> res.json vide (idem pour tout le fichier)
     } catch (error) {
       next(error);
     }

@@ -11,12 +11,12 @@ router.get("/", (req, res) => {
   res.redirect("/api-docs");
 });
 
-router.use("/auth", authRouter);
+router.use("/auth", authRouter); //Oumaïma schéma
 
-router.use("/locations", locationRouter);
+router.use("/locations", locationRouter); //Oumaïma
 
-router.use("/user-types", userTypesRouter);
+router.use("/user-types", userTypesRouter); //Adrien
 
-router.use("/orders", orderRouter);
+router.use("/orders", orderRouter); //Tarig
 
 router.use("/users", userRouter);
