@@ -4,7 +4,17 @@ import { upload } from "../middlewares/multer.middleware.js";
 
 export const router = Router();
 
-
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Récupérer toutes les produits (back-office)
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Liste des produits
+ */
+// Récup toutes les produits 
 router.get("/", productController.getAll);
 router.get("/pagination", productController.getProductsWithPagination);
 router.get("/with_location/:id", productController.getOneProductWithLocations);
