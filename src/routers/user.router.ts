@@ -89,50 +89,6 @@ router.get("/:id", checkRoles(["admin"]), userController.getById);
 
 /**
  * @swagger
- * /users:
- *   post:
- *     summary: Créer un nouvel utilisateur (admin only)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - firstname
- *               - lastname
- *               - email
- *               - password
- *               - userTypeId
- *             properties:
- *               firstname:
- *                 type: string
- *               lastname:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               role:
- *                 type: string
- *                 enum: [member, admin]
- *               entity_name:
- *                 type: string
- *               userTypeId:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Utilisateur créé
- *       400:
- *         description: Requête invalide
- */
-router.post("/", checkRoles(["admin"]), userController.createUser);
-
-/**
- * @swagger
  * /users/{id}:
  *   patch:
  *     summary: Mettre à jour un utilisateur (admin only)
