@@ -49,7 +49,7 @@ class OrderController extends BaseController {
 
       const updatedOrder = await this.model.update({
         where: { id: order_id },
-        data: { ...data, updated_at: new Date() },
+        data
       });
 
       res.json(updatedOrder);
