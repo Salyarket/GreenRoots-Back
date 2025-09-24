@@ -42,7 +42,36 @@ router.get("/with_location/:id", productController.getOneProductWithLocations);
  *         description: Produit introuvable
  */
 router.get("/:id", productController.getById);
+
+
 router.post("/", upload.array("images", 3), productController.createProduct);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   patch:
+ *     summary: Mettre à jour un produit (admin only)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *          multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Product_patch'
+ *     responses:
+ *       200:
+ *         description: Produit mis à jour
+ *       404:
+ *         description: Produit introuvable
+ */
 router.patch("/:id", upload.any(), productController.updateProduct);
 router.delete("/:id",  productController.deleteProduct);
 
