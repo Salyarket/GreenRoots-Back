@@ -40,11 +40,11 @@ class ProductController extends BaseController {
 
       return res.json({
         data: products,
-        pagination_State: {
+      pagination_State: {
           total,
           page,
           limit,
-          totalPages: Math.ceil(total / limit),
+          totalPages: Math.ceil(total / liclearmit),
         },
       });
     } catch (error) {

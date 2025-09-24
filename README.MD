@@ -26,7 +26,7 @@
 
 ---
 
-## INITIALISAION EN LOCAL (HORS DOCKER) ==> AUSSI RECOMMENDÉ
+## INITIALISAION EN LOCAL (HORS DOCKER) ==> AUSSI RECOMMANDÉ
 
 - 1 : Ouvrir un terminal et tappez : "npm i"
 - 2 : crée un .env à la racine du projet si ce n'est pas déjà fait et copier-coller le .env.example
