@@ -19,7 +19,7 @@ model UserType {
   label      String   @db.VarChar(255)
   tva_rate    Decimal  @db.Decimal(5, 2)
   created_at   DateTime  @default(now()) 
-  updated_at   DateTime  @updatedAt
+  updated_at   DateTime @updatedAt @db.Timestamptz(6)
 
   users User[]
 
