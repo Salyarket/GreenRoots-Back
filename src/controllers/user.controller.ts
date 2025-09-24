@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { createUserSchema, updateUserSchema } from "../schemas/user.schema.js";
+import { updateUserSchema } from "../schemas/user.schema.js";
 import { NotFoundError } from "../lib/errors.js";
 import { prisma } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
@@ -13,37 +13,8 @@ const userRelations = {
 
 class UserController extends BaseController {
   constructor() {
-    super(prisma.user, "user", createUserSchema, userRelations);
+    super(prisma.user, "user", updateUserSchema, userRelations);
   }
-
-  // CREATE an user
-  //! TODO : pas de create user dans le cahier des charges
-  createUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = await createUserSchema.parseAsync(req.body);
-
-      // Hash password before backup
-      const hashedPassword = await bcrypt.hash(data.password, 10);
-
-      const createdUser = await this.model.create({
-        data: {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email,
-          password: hashedPassword,
-          role: data.role,
-          entity_name: data.entity_name,
-          userType: { connect: { id: data.userTypeId } },
-        },
-        include: this.relations,
-      });
-      // suppression du mdp avant retour
-      delete (createdUser as any).password;
-      res.status(201).json(createdUser);
-    } catch (error) {
-      next(error);
-    }
-  };
 
   // UPDATE an user
   updateUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -107,7 +78,7 @@ class UserController extends BaseController {
   updateMe = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = (req as any).userId;
-      const role = (req as any).role;
+      const role = (req as any).userRole;
 
       const data = await updateUserSchema.parseAsync(req.body);
 
