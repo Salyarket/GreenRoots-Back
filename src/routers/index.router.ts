@@ -15,6 +15,11 @@ router.get("/", (req, res) => {
   res.redirect("/api-docs");
 });
 
+// Route de test pour le front
+router.get("/api/hello", (req, res) => {
+  res.json({ message: "Hello depuis Express 🚀" });
+});
+
 router.use("/products", productRouter);
 // router.use("/products", productRouter);
 
