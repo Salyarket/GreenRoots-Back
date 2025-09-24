@@ -16,8 +16,31 @@ export const router = Router();
  */
 // Récup toutes les produits 
 router.get("/", productController.getAll);
+
+
 router.get("/pagination", productController.getProductsWithPagination);
+
+
 router.get("/with_location/:id", productController.getOneProductWithLocations);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Récupérer un produit par ID 
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Produit trouvé
+ *       404:
+ *         description: Produit introuvable
+ */
 router.get("/:id", productController.getById);
 router.post("/", upload.array("images", 3), productController.createProduct);
 router.patch("/:id", upload.any(), productController.updateProduct);
