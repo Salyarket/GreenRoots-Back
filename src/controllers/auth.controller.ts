@@ -3,23 +3,21 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { ZodType } from "zod";
 import { ConflictError, UnauthorizedError } from "../lib/errors.js";
+import { loginSchema, registerSchema } from "../schemas/user.schema.js";
 
 export default class AuthController {
   model: PrismaClient["user"]; // modèle prisma user
   modelName: string;
-  schema?: ZodType;
 
-  constructor(prisma: PrismaClient, modelName: string, schema?: ZodType) {
+  constructor(prisma: PrismaClient, modelName: string) {
     this.model = prisma.user; // recupere le model user
     this.modelName = modelName;
-    this.schema = schema;
   }
 
   // 1. FUNCTION REGISTER
   register = async (req: Request, res: Response, next: NextFunction) => {
-    const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
+    const validatedData = registerSchema.parse(req.body);
 
     const { email, password } = validatedData as {
       email: string;
@@ -52,7 +50,7 @@ export default class AuthController {
 
   // 2. FUNCTION LOGIN
   login = async (req: Request, res: Response, next: NextFunction) => {
-    const validatedData = this.schema ? this.schema.parse(req.body) : req.body;
+    const validatedData = loginSchema.parse(req.body);
 
     const { email, password } = validatedData as {
       email: string;
