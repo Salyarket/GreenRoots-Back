@@ -107,7 +107,7 @@ class UserController extends BaseController {
   updateMe = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = (req as any).userId;
-      const role = (req as any).role;
+      const role = (req as any).userRole;
 
       const data = await updateUserSchema.parseAsync(req.body);
 

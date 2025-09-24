@@ -6,6 +6,53 @@ const router = Router();
 
 /**
  * @swagger
+ * /me:
+ *   get:
+ *     summary: Récupérer son propre profil (member ou admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Profil de l’utilisateur connecté
+ */
+router.get("/me", checkRoles(["member", "admin"]), userController.getMe);
+
+/**
+ * @swagger
+ * /me:
+ *   patch:
+ *     summary: Mettre à jour son propre profil (member ou admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstname:
+ *                 type: string
+ *               lastname:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               entity_name:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Profil mis à jour
+ *       404:
+ *         description: Utilisateur introuvable
+ */
+router.patch("/me", checkRoles(["member", "admin"]), userController.updateMe);
+
+/**
+ * @swagger
  * /users:
  *   get:
  *     summary: Récupérer tous les utilisateurs (admin only)
@@ -149,52 +196,5 @@ router.patch("/:id", checkRoles(["admin"]), userController.updateUser);
  *         description: Utilisateur introuvable
  */
 router.delete("/:id", checkRoles(["admin"]), userController.deleteById);
-
-/**
- * @swagger
- * /me:
- *   get:
- *     summary: Récupérer son propre profil (member ou admin)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Profil de l’utilisateur connecté
- */
-router.get("/me", checkRoles(["member", "admin"]), userController.getMe);
-
-/**
- * @swagger
- * /me:
- *   patch:
- *     summary: Mettre à jour son propre profil (member ou admin)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               firstname:
- *                 type: string
- *               lastname:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               entity_name:
- *                 type: string
- *     responses:
- *       200:
- *         description: Profil mis à jour
- *       404:
- *         description: Utilisateur introuvable
- */
-router.patch("/me", checkRoles(["member", "admin"]), userController.updateMe);
 
 export default router;
