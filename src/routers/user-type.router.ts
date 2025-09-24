@@ -79,7 +79,7 @@ router.get("/:id", checkRoles(["admin"]), userTypeController.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", userTypeController.create);
+router.post("/", checkRoles(["admin"]), userTypeController.create);
 
 /**
  * @swagger
@@ -116,7 +116,7 @@ router.post("/", userTypeController.create);
  *       500:
  *         description: Erreur serveur
  */
-router.patch("/:id", userTypeController.update);
+router.patch("/:id", checkRoles(["admin"]), userTypeController.update);
 
 /**
  * @swagger
