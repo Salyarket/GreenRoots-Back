@@ -65,7 +65,7 @@ router.patch("/me", checkRoles(["member", "admin"]), userController.updateMe);
  */
 router.get("/", checkRoles(["admin"]), userController.getAll);
 
-router.get("/pagination", userController.getAllWithPagination);
+router.get("/pagination",checkRoles(["admin"]), userController.getAllWithPagination);
 
 /**
  * @swagger
