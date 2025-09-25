@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { ZodType, ZodObject } from "zod";
 import { ConflictError, NotFoundError } from "../lib/errors.js";
 import { Prisma } from "@prisma/client";
+import { Pagination } from "../schemas/pagination.schema.js";
+import { parseOrder } from "../utils/Parser.js"
 
 export default class BaseController {
   model: any;
@@ -29,6 +31,36 @@ export default class BaseController {
       res.json(items);
     } catch (error) {
       next(error); //global-error-handler se charge de la gestion d'erreur
+    }
+  };
+
+  // Exemple avec product : GET http://localhost:3000//products/pagination?limit=5&page=2&sortBy=name&sortOrder=desc
+  getAllWithPagination = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { page, limit, sortBy, sortOrder } = await Pagination(req.query);
+
+      const [items, total] = await Promise.all([
+        this.model.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: parseOrder(sortBy, sortOrder)
+          // Optionnel : il est possible que l'on ait besoin des informations order lié a user par exemple
+          // include: this.relations,
+        }),
+        this.model.count(),
+      ]);
+
+      return res.json({
+        data: items,
+        pagination_State: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      next(error);
     }
   };
 

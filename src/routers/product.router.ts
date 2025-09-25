@@ -1,6 +1,7 @@
 import { Router } from "express";
 import  productController from "../controllers/product.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { checkRoles } from "../middlewares/access-control.middleware.js";
 
 export const router = Router();
 
@@ -16,11 +17,7 @@ export const router = Router();
  */
 // Récup toutes les produits 
 router.get("/", productController.getAll);
-
-
-router.get("/pagination", productController.getProductsWithPagination);
-
-
+router.get("/pagination", productController.getAllWithPagination);
 router.get("/with_location/:id", productController.getOneProductWithLocations);
 
 /**
@@ -42,6 +39,7 @@ router.get("/with_location/:id", productController.getOneProductWithLocations);
  *         description: Produit introuvable
  */
 router.get("/:id", productController.getById);
+<<<<<<< HEAD
 
 
 router.post("/", upload.array("images", 3), productController.createProduct);
@@ -74,5 +72,10 @@ router.post("/", upload.array("images", 3), productController.createProduct);
  */
 router.patch("/:id", upload.any(), productController.updateProduct);
 router.delete("/:id",  productController.deleteProduct);
+=======
+router.post("/", checkRoles(["admin"]), upload.array("images", 3), productController.createProduct);
+router.patch("/:id", checkRoles(["admin"]), upload.any(), productController.updateProduct);
+router.delete("/:id", checkRoles(["admin"]),  productController.deleteProduct);
+>>>>>>> dev
 
 export default router;
