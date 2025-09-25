@@ -6,7 +6,7 @@ export const router = Router();
 
 
 router.get("/", productController.getAll);
-router.get("/pagination", productController.getProductsWithPagination);
+router.get("/pagination", productController.getAllWithPagination);
 router.get("/with_location/:id", productController.getOneProductWithLocations);
 router.get("/:id", productController.getById);
 router.post("/", upload.array("images", 3), productController.createProduct);
