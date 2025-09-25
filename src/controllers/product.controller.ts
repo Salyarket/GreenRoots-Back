@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import BaseController from "./base.controller.js";
 import { parseIdFromParams } from "../utils/zod.js";
-import { Pagination } from "../utils/pagination.js";
+import { Pagination } from "../schemas/pagination.schema.js";
 import {
   productDbSchema,
   productSchemaForCreate,
@@ -20,40 +20,6 @@ class ProductController extends BaseController {
   constructor() {
     super(prisma.product, "product", productDbSchema);
   }
-
-  // Pour tester avec postman :
-  // GET http://localhost:3000/products/pagination?limit=5&page=2&order=name:desc
-  // GET http://localhost:3000/products/pagination?limit=5&page=2&order=name:asc
-  getProductsWithPagination = async (req: Request, res: Response) => {
-    // Reste à faire : Les filtres par prix, localisation, carbon ...
-
-    try {
-      const { page, limit, order } = await Pagination(req.query);
-
-      const products = await prisma.product.findMany({
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: order === "name:asc" ? { name: "asc" } : { name: "desc" },
-      });
-
-      const total = await prisma.product.count();
-
-      return res.json({
-        data: products,
-      pagination_State: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / liclearmit),
-        },
-      });
-    } catch (error) {
-      return res.status(400).json({
-        error: "Paramètres de recherche non valide",
-        details: error,
-      });
-    }
-  };
 
   getOneProductWithLocations = async (req: any, res: any) => {
     const productId = await parseIdFromParams(req.params.id);
