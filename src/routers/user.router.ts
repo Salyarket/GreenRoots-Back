@@ -65,6 +65,16 @@ router.patch("/me", checkRoles(["member", "admin"]), userController.updateMe);
  */
 router.get("/", checkRoles(["admin"]), userController.getAll);
 
+/**
+ * @swagger
+ * /users/pagination:
+ *   get:
+ *     summary: Récupérer tous les user avec pagination et trie ASC et DESC sur les champs de l'entité user (back-office)
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Liste des utilisateurs
+ */
 router.get("/pagination",checkRoles(["admin"]), userController.getAllWithPagination);
 
 /**
