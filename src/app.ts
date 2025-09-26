@@ -1,12 +1,18 @@
-import dotenv from "dotenv";
 dotenv.config();
 
+import dotenv from "dotenv";
+import cors from "cors";
 import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
 import { router as apiRouter } from "./routers/index.router.js";
 import { setupSwagger } from "./swagger/swagger-config.js";
 import { globalErrorHandler } from "./middlewares/global-error-handler.js";
 
-import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Recréer __dirname en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Créer une app Express
 export const app = express();
@@ -22,6 +28,9 @@ if (!process.env.DATABASE_URL) {
 // Autoriser les requêtes cross-origin
 //! sécurité au moment de connecter le back avec le front
 app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
+
+// Middleware pour servir les fichiers du dossier uploads IMAGES ARBRES
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Cookie parser
 // app.use(cookieParser());
