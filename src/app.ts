@@ -1,6 +1,6 @@
 dotenv.config();
 
-import dotenv from "dotenv";
+import dotenv from "dotenv"; // revoir car install une librarie pas obligatoire peut faire sans
 import cors from "cors";
 import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
 import { router as apiRouter } from "./routers/index.router.js";
