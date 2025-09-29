@@ -10,11 +10,9 @@ async function main() {
 
   await prisma.userType.createMany({
     data: [
-      { code: "PRO", label: "Professionnel", tva_rate: 20.0 },
       { code: "PART", label: "Particulier", tva_rate: 20.0 },
       { code: "ASSO", label: "Association", tva_rate: 5.5 },
       { code: "ENT", label: "Entreprise", tva_rate: 20.0 },
-      { code: "AUTOENT", label: "Auto Entrepreneur", tva_rate: 20.0 },
     ],
     skipDuplicates: true,
   });
@@ -65,7 +63,7 @@ async function main() {
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
 
         role: Role.member,
-        user_type_id: 5,
+        user_type_id: 3,
       },
     ],
     skipDuplicates: true,
@@ -128,7 +126,11 @@ async function main() {
         price: 90,
         description:
           "Arbre majestueux d'Europe, symbole de longévité et de biodiversité.",
-        image_urls: ["chene-pedoncule.webp", "chene-pedoncule_2.webp", "chene-pedoncule_3.webp"],
+        image_urls: [
+          "chene-pedoncule.webp",
+          "chene-pedoncule_2.webp",
+          "chene-pedoncule_3.webp",
+        ],
         stock: 100,
         scientific_name: "Quercus robur",
         carbon: 30,
@@ -223,7 +225,11 @@ async function main() {
         slug: "bouleau",
         price: 70,
         description: "Arbre pionnier reconnaissable à son écorce blanche.",
-        image_urls: ["bouleau-verruqueux.webp", "bouleau_verruqueux_2.webp", "bouleau_verruqueux_3.webp"],
+        image_urls: [
+          "bouleau-verruqueux.webp",
+          "bouleau_verruqueux_2.webp",
+          "bouleau_verruqueux_3.webp",
+        ],
         stock: 110,
         scientific_name: "Betula pendula",
         carbon: 18,
@@ -236,7 +242,11 @@ async function main() {
         price: 80,
         description:
           "Arbre majestueux aux grandes feuilles, très présent en Europe.",
-        image_urls: ["erable_sycomore.webp", "erable_sycomore_2.webp", "erable_sycomore_3.webp"],
+        image_urls: [
+          "erable_sycomore.webp",
+          "erable_sycomore_2.webp",
+          "erable_sycomore_3.webp",
+        ],
         stock: 85,
         scientific_name: "Acer pseudoplatanus",
         carbon: 24,
@@ -246,7 +256,11 @@ async function main() {
         slug: "aulne",
         price: 70,
         description: "Arbre aimant l'eau, fréquent le long des rivières.",
-        image_urls: ["aulne_glutineux.webp", "aulne_glutineux_2.webp", "aulne_glutineux_3.webp"],
+        image_urls: [
+          "aulne_glutineux.webp",
+          "aulne_glutineux_2.webp",
+          "aulne_glutineux_3.webp",
+        ],
         stock: 75,
         scientific_name: "Alnus glutinosa",
         carbon: 20,
@@ -257,7 +271,11 @@ async function main() {
         price: 95,
         description:
           "Arbre ornemental très reconnaissable, souvent au bord de l'eau.",
-        image_urls: ["saule_pleureur.webp", "saule_pleureur_2.webp", "saule_pleureur_3.webp"],
+        image_urls: [
+          "saule_pleureur.webp",
+          "saule_pleureur_2.webp",
+          "saule_pleureur_3.webp",
+        ],
         stock: 60,
         scientific_name: "Salix babylonica",
         carbon: 22,
@@ -268,7 +286,11 @@ async function main() {
         price: 120,
         description:
           "Conifère emblématique, originaire d'Afrique du Nord mais présent en France.",
-        image_urls: ["cedre_atlas.webp", "cedre_atlas_2.webp", "cedre_atlas_3.webp"],
+        image_urls: [
+          "cedre_atlas.webp",
+          "cedre_atlas_2.webp",
+          "cedre_atlas_3.webp",
+        ],
         stock: 50,
         scientific_name: "Cedrus atlantica",
         carbon: 35,
@@ -279,7 +301,11 @@ async function main() {
         price: 100,
         description:
           "Arbre produisant des noix, apprécié pour son bois précieux.",
-        image_urls: ["noyer_commun 1.webp", "noyer_commun_2.webp", "noyer_commun_3.webp"],
+        image_urls: [
+          "noyer_commun 1.webp",
+          "noyer_commun_2.webp",
+          "noyer_commun_3.webp",
+        ],
         stock: 65,
         scientific_name: "Juglans regia",
         carbon: 28,
@@ -289,7 +315,11 @@ async function main() {
         slug: "charme",
         price: 85,
         description: "Arbre robuste souvent utilisé en haies et alignements.",
-        image_urls: ["charme_commun.webp", "charme_commun_2.webp", "charme_commun_3.webp"],
+        image_urls: [
+          "charme_commun.webp",
+          "charme_commun_2.webp",
+          "charme_commun_3.webp",
+        ],
         stock: 90,
         scientific_name: "Carpinus betulus",
         carbon: 23,
@@ -297,7 +327,6 @@ async function main() {
     ],
     skipDuplicates: true,
   });
-
 
   console.log("✅ Seeding Products Done ✅");
 
