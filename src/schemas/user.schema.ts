@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// regex pas de chiffres dans firstname / lastname
+const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$/;
+
 export const updateUserSchema = z.object({
   firstname: z.string().min(1).max(255).optional(),
   lastname: z.string().min(1).max(255).optional(),
@@ -14,12 +17,14 @@ export const registerSchema = z.object({
   firstname: z
     .string()
     .min(1, { message: "Le prénom est requis" })
-    .max(255, { message: "Le prénom ne peut pas dépasser 255 caractères" }),
+    .max(255, { message: "Le prénom ne peut pas dépasser 255 caractères" })
+    .regex(onlyLetters),
 
   lastname: z
     .string()
     .min(1, { message: "Le nom est requis" })
-    .max(255, { message: "Le nom ne peut pas dépasser 255 caractères" }),
+    .max(255, { message: "Le nom ne peut pas dépasser 255 caractères" })
+    .regex(onlyLetters),
 
   email: z
     .email({ message: "Adresse email invalide" })
