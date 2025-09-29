@@ -45,6 +45,7 @@ model User {
   userType    UserType  @relation(fields: [user_type_id], references: [id], onDelete: Restrict)
   orders      Order[]
   logs        Log[]
+  refresh_token RefreshToken[]
 
   @@map("user")
 }
@@ -180,4 +181,20 @@ enum LogSource {
   CRON
   FRONT
   BACK
+}
+
+// =======================================
+// TABLE refresh token
+// =======================================
+model RefreshToken{
+  id Int @id @default(autoincrement())
+  token String
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
+
+  created_at   DateTime  @default(now())
+  expired_at   DateTime
+
+  @@map("refresh_token")
 }

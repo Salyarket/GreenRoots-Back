@@ -114,6 +114,17 @@ CREATE TABLE "public"."log" (
     CONSTRAINT "log_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "public"."refresh_token" (
+    "id" SERIAL NOT NULL,
+    "token" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expired_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "refresh_token_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_type_code_key" ON "public"."user_type"("code");
 
@@ -143,3 +154,6 @@ ALTER TABLE "public"."product_location" ADD CONSTRAINT "product_location_locatio
 
 -- AddForeignKey
 ALTER TABLE "public"."log" ADD CONSTRAINT "log_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."refresh_token" ADD CONSTRAINT "refresh_token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
