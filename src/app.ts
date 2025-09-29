@@ -1,11 +1,12 @@
+import dotenv from "dotenv"; 
 dotenv.config();
 
-import dotenv from "dotenv"; // revoir car install une librarie pas obligatoire peut faire sans
 import cors from "cors";
-import express from "express"; // Pour installer les types d'Express : npm i --save-dev @types/express -w api
+import express from "express";
 import { router as apiRouter } from "./routers/index.router.js";
 import { setupSwagger } from "./swagger/swagger-config.js";
 import { globalErrorHandler } from "./middlewares/global-error-handler.js";
+import cookieParser from "cookie-parser"; // pour gérer les cookies dans les requêtes HTTP en les analysant et en les rendant accessibles via req.cookies
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -26,21 +27,23 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Autoriser les requêtes cross-origin
-//! sécurité au moment de connecter le back avec le front
 app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
 
-// Middleware pour servir les fichiers du dossier uploads IMAGES ARBRES
+// Middleware pour parser les cookies (attention : avant tes routes)
+app.use(cookieParser());
+
+// Middleware pour servir les fichiers du dossier uploads
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// Cookie parser
-// app.use(cookieParser());
-
+// Middleware JSON & URL-encoded
 app.use(express.json());
-
-// Pour parser form-urlencoded (formulaires HTML classiques)
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger
 setupSwagger(app);
 
+// Routes
 app.use("/", apiRouter);
-app.use(globalErrorHandler); // Global error middleware
+
+// Global error middleware > toujours être en dernier sauf après un 404 handler !
+app.use(globalErrorHandler);
