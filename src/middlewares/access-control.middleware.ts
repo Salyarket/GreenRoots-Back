@@ -11,15 +11,19 @@ interface MyJWTPayload {
 // vérif des rôles
 export function checkRoles(roles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+    //const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
-      return res.status(401).json({ error: "Token manquant" });
-    }
+    //if (!authHeader) {
+    //return res.status(401).json({ error: "Token manquant" });
+    //}
 
-    const token = authHeader.split(" ")[1]; // "Bearer <token>"
+    //const token = authHeader.split(" ")[1]; // "Bearer <token>"
 
     try {
+
+      // on utilise la fonction utilitaire, on met authHeader pour éviter les conflits
+      const token = extractAccessToken(req);
+
       // vérif et décode le jwt
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as MyJWTPayload;
 
@@ -37,4 +41,14 @@ export function checkRoles(roles: string[]) {
       return res.status(401).json({ error: "Token invalide ou expiré" });
     }
   };
+}
+
+function extractAccessToken(req: Request): string {
+  if (typeof req.cookies?.accessToken === "string") {
+    return req.cookies.accessToken;
+  }
+  if (typeof req.headers?.authorization === "string") {
+    return req.headers.authorization.split(" ")[1]; // "Bearer <token>"
+  }
+  throw new Error("Token non fournit");
 }
