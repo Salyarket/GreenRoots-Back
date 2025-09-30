@@ -104,6 +104,13 @@ export default class AuthController {
 
       return res.json({
         message: "Login successful",
+        user: {
+          id: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          role: user.role,
+        },
         accessToken,
         refreshToken,
       });
