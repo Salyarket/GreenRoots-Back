@@ -119,8 +119,20 @@ export default class AuthController {
     }
   };
 
-  // 3. FUNCTION REFRESH ACCESS TOKEN
+  // 3. FUNCTION LOGOUT
+  logoutUser = async (_: Request, res: Response) => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: config.server.secure,
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: config.server.secure,
+    });
+    res.status(204).json({ status: 204, message: "Successfully logged out" });
+  };
 
+  // 3. FUNCTION REFRESH ACCESS TOKEN
   // function replace refresh token in DB
   replaceRefreshTokenInDB = async (
     userId: number,
@@ -161,7 +173,7 @@ export default class AuthController {
       httpOnly: true,
       maxAge: expiresInMs,
       secure: config.server.secure,
-      path: "api/auth/refresh",
+      // path: "api/auth/refresh",
     });
   };
 

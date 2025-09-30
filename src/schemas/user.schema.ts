@@ -4,8 +4,8 @@ import { z } from "zod";
 const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$/;
 
 export const updateUserSchema = z.object({
-  firstname: z.string().min(1).max(255).optional(),
-  lastname: z.string().min(1).max(255).optional(),
+  firstname: z.string().min(2).max(255).regex(onlyLetters).optional(),
+  lastname: z.string().min(2).max(255).regex(onlyLetters).optional(),
   email: z.string().email().max(320).optional(),
   password: z.string().min(6).max(255).optional(),
   role: z.enum(["member", "admin"]).optional(),
@@ -16,13 +16,13 @@ export const updateUserSchema = z.object({
 export const registerSchema = z.object({
   firstname: z
     .string()
-    .min(1, { message: "Le prénom est requis" })
+    .min(2, { message: "Le prénom est requis" })
     .max(255, { message: "Le prénom ne peut pas dépasser 255 caractères" })
     .regex(onlyLetters),
 
   lastname: z
     .string()
-    .min(1, { message: "Le nom est requis" })
+    .min(2, { message: "Le nom est requis" })
     .max(255, { message: "Le nom ne peut pas dépasser 255 caractères" })
     .regex(onlyLetters),
 

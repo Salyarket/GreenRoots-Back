@@ -1,4 +1,4 @@
-import dotenv from "dotenv"; 
+import dotenv from "dotenv";
 dotenv.config();
 
 import cors from "cors";
@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser"; // pour gérer les cookies dans les re
 
 import path from "path";
 import { fileURLToPath } from "url";
+import { config } from "../config.js";
 
 // Recréer __dirname en ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -18,16 +19,14 @@ const __dirname = path.dirname(__filename);
 // Créer une app Express
 export const app = express();
 
-//! DEVELOPPEMENT SUPPRIMER PLUS TARD
-if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET manquant dans .env");
-}
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL manquant dans .env");
-}
-
-// Autoriser les requêtes cross-origin
-app.use(cors({ origin: process.env.ALLOWED_DOMAINS || "*" }));
+// Autoriser les requêtes cross-origin A REVOIR PRODC
+// ALLOWED_ORIGINS=*
+app.use(
+  cors({
+    origin: config.server.allowedOrigins, // ton front
+    credentials: true,
+  })
+);
 
 // Middleware pour parser les cookies (attention : avant tes routes)
 app.use(cookieParser());
