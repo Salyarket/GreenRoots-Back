@@ -85,4 +85,6 @@ router.post("/login", userController.login);
 
 router.post("/logout", userController.logoutUser);
 
+router.post("/refresh", userController.refreshAccessToken);
+
 export default router;
