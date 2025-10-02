@@ -56,6 +56,18 @@ router.get("/:id", checkRoles(["admin"]), locationController.getById);
 
 /**
  * @swagger
+ * /locations/pagination:
+ *   get:
+ *     summary: Récupérer tous les locations avec pagination et trie ASC et DESC sur les champs de l'entité user (back-office)
+ *     tags: [Locations]
+ *     responses:
+ *       200:
+ *         description: Liste des localisations
+ */
+router.get("/pagination",checkRoles(["admin"]), locationController.getAllWithPagination);
+
+/**
+ * @swagger
  * /locations:
  *   post:
  *     summary: Créer un terrain
