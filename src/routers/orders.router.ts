@@ -40,7 +40,7 @@ router.get("/", checkRoles(["admin"]), orderController.getAll);
  *         description: Commande introuvable
  */
 // voir commande complète avec user + type + items
-router.get("/:id", checkRoles(["admin"]), orderController.getById);
+router.get("/:id", checkRoles(["member", "admin"]), orderController.getById);
 
 /**
  * @swagger

@@ -11,21 +11,15 @@ interface MyJWTPayload {
 // vérif des rôles
 export function checkRoles(roles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
-    //const authHeader = req.headers.authorization;
-
-    //if (!authHeader) {
-    //return res.status(401).json({ error: "Token manquant" });
-    //}
-
-    //const token = authHeader.split(" ")[1]; // "Bearer <token>"
-
     try {
-
       // on utilise la fonction utilitaire, on met authHeader pour éviter les conflits
       const token = extractAccessToken(req);
 
       // vérif et décode le jwt
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as MyJWTPayload;
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET!
+      ) as MyJWTPayload;
 
       // vérif du rôle
       if (!roles.includes(decoded.role)) {
