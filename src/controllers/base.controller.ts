@@ -100,6 +100,46 @@ export default class BaseController {
     }
   };
 
+
+  // Création : gestion de la table relationnelle
+  createRelation =
+    (relationName: string, relationFields: string[], schema?: any) =>
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const { id } = req.params; // id de l'entité principale
+
+          // validation Zod si schema fourni
+          let validatedBody: any = req.body;
+          if (schema) {
+            validatedBody = schema.parse(req.body);
+          }
+
+          // Construction relationData
+          const relationData: Record<string, any> = {};
+          relationFields.forEach((field) => {
+            relationData[field] = validatedBody[field];
+          });
+
+          // Update Prisma
+          const updatedItem = await this.model.update({
+            where: { id: Number(id) },
+            data: {
+              [relationName]: { create: relationData },
+            },
+            include: { [relationName]: true },
+          });
+
+          res.status(200).json(updatedItem);
+        } catch (error: any) {
+          // Gestion des erreurs Zod
+          if (error.name === "ZodError") {
+            return res.status(400).json({ message: error.errors });
+          }
+
+          next(error);
+        }
+      };
+
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
@@ -127,6 +167,40 @@ export default class BaseController {
     }
   };
 
+  // Modification : gestion de la table relationnelle
+  updateRelation =
+  (relationName: string, compositeKey: string, schema?: any) =>
+  async (req, res, next) => {
+    try {
+      const { id, relatedId } = req.params;
+      let validatedBody = req.body;
+      if (schema) validatedBody = schema.parse(req.body);
+
+      const relationData: Record<string, any> = {};
+      Object.keys(validatedBody).forEach((field) => {
+        relationData[field] = validatedBody[field];
+      });
+
+      const updatedItem = await this.model.update({
+        where: { id: Number(id) },
+        data: {
+          [relationName]: {
+            update: {
+              where: { [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) } },
+              data: relationData,
+            },
+          },
+        },
+        include: { [relationName]: true },
+      });
+
+      res.status(200).json(updatedItem);
+    } catch (error) {
+      if (error.name === "ZodError") return res.status(400).json({ message: error.errors });
+      next(error);
+    }
+  };
+
   deleteById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
@@ -147,4 +221,32 @@ export default class BaseController {
       next(error);
     }
   };
+
+  // Supression : gestion de la table relationnelle
+  removeRelation =
+  (relationName: string, compositeKey: string) =>
+  async (req, res, next) => {
+    try {
+      const { id, relatedId } = req.params;
+
+      const updatedItem = await this.model.update({
+        where: { id: Number(id) },
+        data: {
+          [relationName]: {
+            delete: {
+              [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) },
+            },
+          },
+        },
+        include: { [relationName]: true },
+      });
+
+      res.status(200).json(updatedItem);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
+
+  // Supression : gestion de la table relationnelle
+  
