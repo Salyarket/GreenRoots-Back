@@ -4,6 +4,7 @@ import { parseIdFromParams } from "../utils/zod.js";
 import { parseOrder } from "../utils/Parser.js";
 import { Pagination } from "../schemas/pagination.schema.js";
 import {
+  idParamSchema,
   productDbSchema,
   productSchemaForCreate,
   productSchemaForUpdate,
@@ -206,6 +207,32 @@ class ProductController extends BaseController {
         error: "Erreur Serveur controller delete product",
         details: error.message,
       });
+    }
+  };
+
+  // soft delete le product avec un archive (available = false) donc on le sort du catalogue mais on garde une trace d'historique pour garder la ligne des les commandes du client
+  archiveProduct = async (req: any, res: any) => {
+    try {
+      const { id } = idParamSchema.parse(req.params);
+
+      const updated = await prisma.product.update({
+        where: { id },
+        data: { available: false },
+      });
+
+      res.json({
+        message: `Produit ${updated.name} (id ${updated.id}) archivé avec succès`,
+        product: updated,
+      });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({ error: "Id du produit invalide" });
+      }
+      if (error.code === "P2025") {
+        return res.status(404).json({ error: "Produit non trouvé" });
+      }
+      console.error(error);
+      res.status(500).json({ error: "Erreur serveur soft delete" });
     }
   };
 }

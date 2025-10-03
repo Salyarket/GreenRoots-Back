@@ -121,6 +121,7 @@ router.post(
  *       404:
  *         description: Produit introuvable
  */
+// patch pour modifier un produit
 router.patch(
   "/:id",
   checkRoles(["admin"]),
@@ -136,5 +137,13 @@ router.patch(
  *     tags: [Products]
  */
 router.delete("/:id", checkRoles(["admin"]), productController.deleteProduct);
+
+// soft delete : suppression douce = on archive le produit avec available false pour le sortir du catalogue mais on garde la trace
+// PATCH /products/:id/archive
+router.patch(
+  "/:id/archive",
+  checkRoles(["admin"]),
+  productController.archiveProduct
+);
 
 export default router;
