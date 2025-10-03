@@ -3,7 +3,8 @@ import { ZodType, ZodObject } from "zod";
 import { ConflictError, NotFoundError } from "../lib/errors.js";
 import { Prisma } from "@prisma/client";
 import { Pagination } from "../schemas/pagination.schema.js";
-import { parseOrder } from "../utils/Parser.js"
+import { parseOrder } from "../utils/Parser.js";
+import { log } from "console";
 
 export default class BaseController {
   model: any;
@@ -35,7 +36,13 @@ export default class BaseController {
   };
 
   // Exemple avec product : GET http://localhost:3000//products/pagination?limit=5&page=2&sortBy=name&sortOrder=desc
-  getAllWithPagination = async (req: Request, res: Response, next: NextFunction) => {
+  // Optionnel : le catalogue produit utilisera cette route pour fetch seulement les produits avalaible (dispo à la vente)
+  //  l'admin utilisune autre route avec tous les produits dispos meme ceux supprimés (available=false) car on ne veut pas supprimer reelement le produit mais l'archiver
+  getAllWithPagination = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { page, limit, sortBy, sortOrder } = await Pagination(req.query);
 
@@ -43,9 +50,7 @@ export default class BaseController {
         this.model.findMany({
           skip: (page - 1) * limit,
           take: limit,
-          orderBy: parseOrder(sortBy, sortOrder)
-          // Optionnel : il est possible que l'on ait besoin des informations order lié a user par exemple
-          // include: this.relations,
+          orderBy: parseOrder(sortBy, sortOrder),
         }),
         this.model.count(),
       ]);

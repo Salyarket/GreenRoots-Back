@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import BaseController from "./base.controller.js";
 import { parseIdFromParams } from "../utils/zod.js";
+import { parseOrder } from "../utils/Parser.js";
 import { Pagination } from "../schemas/pagination.schema.js";
 import {
   productDbSchema,
@@ -20,6 +21,34 @@ class ProductController extends BaseController {
   constructor() {
     super(prisma.product, "product", productDbSchema);
   }
+
+  getAllAvailableWithPagination = async (req: any, res: any, next: any) => {
+    try {
+      const { page, limit, sortBy, sortOrder } = await Pagination(req.query);
+
+      const [items, total] = await Promise.all([
+        this.model.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: parseOrder(sortBy, sortOrder),
+          where: { available: true },
+        }),
+        this.model.count({ where: { available: true } }),
+      ]);
+
+      return res.json({
+        data: items,
+        pagination_State: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   getOneProductWithLocations = async (req: any, res: any) => {
     const productId = await parseIdFromParams(req.params.id);
@@ -167,11 +196,15 @@ class ProductController extends BaseController {
         deletedImages: product.image_urls,
       });
     } catch (error: any) {
+      console.error("Erreur Prisma deleteProduct:", error);
+
       if (error.code === "P2025") {
         return res.status(404).json({ error: "Produit non trouvé" });
       }
-      console.error(error);
-      res.status(500).json({ error: "Erreur Serveur" });
+      res.status(500).json({
+        error: "Erreur Serveur controller delete product",
+        details: error.message,
+      });
     }
   };
 }

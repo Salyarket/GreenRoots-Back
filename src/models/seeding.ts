@@ -134,6 +134,7 @@ async function main() {
         stock: 0,
         scientific_name: "Quercus robur",
         carbon: 30,
+        available: false,
       },
       {
         name: "Hêtre commun",

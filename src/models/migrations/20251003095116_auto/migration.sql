@@ -1,17 +1,17 @@
 -- CreateEnum
-CREATE TYPE "public"."Role" AS ENUM ('member', 'admin');
+CREATE TYPE "Role" AS ENUM ('member', 'admin');
 
 -- CreateEnum
-CREATE TYPE "public"."OrderStatus" AS ENUM ('pending', 'paid', 'cancelled');
+CREATE TYPE "OrderStatus" AS ENUM ('pending', 'paid', 'cancelled');
 
 -- CreateEnum
-CREATE TYPE "public"."LogLevel" AS ENUM ('info', 'warning', 'error', 'debug');
+CREATE TYPE "LogLevel" AS ENUM ('info', 'warning', 'error', 'debug');
 
 -- CreateEnum
-CREATE TYPE "public"."LogSource" AS ENUM ('API', 'CRON', 'FRONT', 'BACK');
+CREATE TYPE "LogSource" AS ENUM ('API', 'CRON', 'FRONT', 'BACK');
 
 -- CreateTable
-CREATE TABLE "public"."user_type" (
+CREATE TABLE "user_type" (
     "id" SERIAL NOT NULL,
     "code" VARCHAR(50) NOT NULL,
     "label" VARCHAR(255) NOT NULL,
@@ -23,13 +23,13 @@ CREATE TABLE "public"."user_type" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."user" (
+CREATE TABLE "user" (
     "id" SERIAL NOT NULL,
     "firstname" VARCHAR(255) NOT NULL,
     "lastname" VARCHAR(255) NOT NULL,
     "email" VARCHAR(320) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "role" "public"."Role" NOT NULL DEFAULT 'member',
+    "role" "Role" NOT NULL DEFAULT 'member',
     "entity_name" VARCHAR(255),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE "public"."user" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."product" (
+CREATE TABLE "product" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "slug" VARCHAR(255) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE "public"."product" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."location" (
+CREATE TABLE "location" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "latitude" DOUBLE PRECISION NOT NULL,
@@ -69,9 +69,9 @@ CREATE TABLE "public"."location" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."order" (
+CREATE TABLE "order" (
     "id" SERIAL NOT NULL,
-    "status" "public"."OrderStatus" NOT NULL,
+    "status" "OrderStatus" NOT NULL,
     "total" DECIMAL(10,2) NOT NULL DEFAULT 0.0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE "public"."order" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."order_item" (
+CREATE TABLE "order_item" (
     "id" SERIAL NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 1,
     "unit_price" DECIMAL(10,2) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE "public"."order_item" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."product_location" (
+CREATE TABLE "product_location" (
     "product_id" INTEGER NOT NULL,
     "location_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -102,11 +102,11 @@ CREATE TABLE "public"."product_location" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."log" (
+CREATE TABLE "log" (
     "id" SERIAL NOT NULL,
-    "level" "public"."LogLevel" NOT NULL,
+    "level" "LogLevel" NOT NULL,
     "message" VARCHAR(2500) NOT NULL,
-    "source" "public"."LogSource" NOT NULL DEFAULT 'BACK',
+    "source" "LogSource" NOT NULL DEFAULT 'BACK',
     "context" JSONB,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
@@ -115,7 +115,7 @@ CREATE TABLE "public"."log" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."refresh_token" (
+CREATE TABLE "refresh_token" (
     "id" SERIAL NOT NULL,
     "token" TEXT NOT NULL,
     "user_id" INTEGER NOT NULL,
@@ -126,34 +126,34 @@ CREATE TABLE "public"."refresh_token" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_type_code_key" ON "public"."user_type"("code");
+CREATE UNIQUE INDEX "user_type_code_key" ON "user_type"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "product_slug_key" ON "public"."product"("slug");
+CREATE UNIQUE INDEX "product_slug_key" ON "product"("slug");
 
 -- AddForeignKey
-ALTER TABLE "public"."user" ADD CONSTRAINT "user_user_type_id_fkey" FOREIGN KEY ("user_type_id") REFERENCES "public"."user_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user" ADD CONSTRAINT "user_user_type_id_fkey" FOREIGN KEY ("user_type_id") REFERENCES "user_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."order" ADD CONSTRAINT "order_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "order" ADD CONSTRAINT "order_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."order_item" ADD CONSTRAINT "order_item_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "order_item" ADD CONSTRAINT "order_item_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."order_item" ADD CONSTRAINT "order_item_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "order_item" ADD CONSTRAINT "order_item_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."product_location" ADD CONSTRAINT "product_location_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "product_location" ADD CONSTRAINT "product_location_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."product_location" ADD CONSTRAINT "product_location_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "product_location" ADD CONSTRAINT "product_location_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."log" ADD CONSTRAINT "log_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "log" ADD CONSTRAINT "log_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."refresh_token" ADD CONSTRAINT "refresh_token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "refresh_token" ADD CONSTRAINT "refresh_token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
