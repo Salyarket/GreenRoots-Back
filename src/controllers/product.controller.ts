@@ -22,6 +22,7 @@ class ProductController extends BaseController {
     super(prisma.product, "product", productDbSchema);
   }
 
+  // pour admin, récupère tous les produits meme ceux non available (pour infor quand produit = available = false ca veut dire qu'on la soft deleted)
   getAllAvailableWithPagination = async (req: any, res: any, next: any) => {
     try {
       const { page, limit, sortBy, sortOrder } = await Pagination(req.query);

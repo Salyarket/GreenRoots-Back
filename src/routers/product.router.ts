@@ -35,7 +35,11 @@ router.get(
 );
 
 // admin récup tous les produits meme non dispo à la vente pour crud
-router.get("/pagination", productController.getAllWithPagination);
+router.get(
+  "/pagination/all",
+  checkRoles(["admin"]),
+  productController.getAllWithPagination
+);
 
 /**
  * @swagger
