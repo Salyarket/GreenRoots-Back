@@ -100,9 +100,14 @@ class ProductController extends BaseController {
       const product = await prisma.product.create({ data: imgPath });
 
       res.status(201).json(product);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === "P2002") {
+        return res
+          .status(409)
+          .json({ error: "Slug déjà utilisé, choisissez un autre nom" });
+      }
       console.error(error);
-      res.status(400).json({ error: "données invalides" });
+      res.status(500).json({ error: "Erreur serveur" });
     }
   };
 
