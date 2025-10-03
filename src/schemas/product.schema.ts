@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Les schémas addaptés en fonction des besoins GET / PATCH / POST / DELETE
 
-// Schéma de de base 
+// Schéma de de base
 export const productDbSchema = z.object({
   name: z.string().min(1).max(255),
   slug: z.string().min(1).max(255),
@@ -25,33 +25,32 @@ export const productSchemaForCreate = productDbSchema.extend({
     (val) => (val !== "" ? toNumberWith2Decimals(val) : 0.0),
     z.number().min(0)
   ),
-  image_urls: z.preprocess(
-    (val) => {
-      if (typeof val === "string") {
-        return val.split(",").map((s) => s.trim());
-      }
-      return val ?? [];
-    },
-    z.array(z.string()).max(100)
-  ),
+  image_urls: z.preprocess((val) => {
+    if (typeof val === "string") {
+      return val.split(",").map((s) => s.trim());
+    }
+    return val ?? [];
+  }, z.array(z.string()).max(100)),
   available: z.preprocess((val) => val === "true" || val === true, z.boolean()),
   stock: z.preprocess(
     (val) => (val !== "" ? Number(val) : 0),
     z.number().int().nonnegative().default(0)
   ),
   carbon: z.preprocess(
-    (val) =>
-      val !== "" && val !== null ? toNumberWith2Decimals(val) : null,
+    (val) => (val !== "" && val !== null ? toNumberWith2Decimals(val) : null),
     z.number().nullable().optional()
   ),
 });
 
 // Schéma d’update : tous les champs optionnels + replace_images
-export const productSchemaForUpdate = productSchemaForCreate
-  .partial()
-  .extend({
-    replace_images: z.preprocess(
-      (val) => val === "true" || val === true,
-      z.boolean().optional()
-    ),
-  });
+export const productSchemaForUpdate = productSchemaForCreate.partial().extend({
+  replace_images: z.preprocess(
+    (val) => val === "true" || val === true,
+    z.boolean().optional()
+  ),
+});
+
+// schema pour le soft delete du patch (archive product)
+export const idParamSchema = z.object({
+  id: z.string().regex(/^\d+$/, "Id invalide").transform(Number),
+});

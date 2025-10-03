@@ -1,5 +1,5 @@
 import { Router } from "express";
-import  productController from "../controllers/product.controller.js";
+import productController from "../controllers/product.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
 
@@ -15,7 +15,7 @@ export const router = Router();
  *       200:
  *         description: Liste des produits
  */
-// Récup toutes les produits 
+// Récup toutes les produits
 router.get("/", productController.getAll);
 
 /**
@@ -28,13 +28,24 @@ router.get("/", productController.getAll);
  *       200:
  *         description: Liste des produits
  */
-router.get("/pagination", productController.getAllWithPagination);
+// récup tous les produits dispo à la vente (available = true)
+router.get(
+  "/pagination/available",
+  productController.getAllAvailableWithPagination
+);
+
+// admin récup tous les produits meme non dispo à la vente pour crud
+router.get(
+  "/pagination/all",
+  checkRoles(["admin"]),
+  productController.getAllWithPagination
+);
 
 /**
  * @swagger
  * /products/with_location/{id}:
  *   get:
- *     summary: Récupérer un produit par ID et ses localisations 
+ *     summary: Récupérer un produit par ID et ses localisations
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -54,7 +65,7 @@ router.get("/with_location/:id", productController.getOneProductWithLocations);
  * @swagger
  * /products/{id}:
  *   get:
- *     summary: Récupérer un produit par ID 
+ *     summary: Récupérer un produit par ID
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -77,7 +88,12 @@ router.get("/:id", productController.getById);
  *     summary: Créer un produit (admin only)
  *     tags: [Products]
  */
-router.post("/", checkRoles(["admin"]), upload.array("images", 3), productController.createProduct);
+router.post(
+  "/",
+  checkRoles(["admin"]),
+  upload.array("images", 3),
+  productController.createProduct
+);
 
 /**
  * @swagger
@@ -105,7 +121,13 @@ router.post("/", checkRoles(["admin"]), upload.array("images", 3), productContro
  *       404:
  *         description: Produit introuvable
  */
-router.patch("/:id", checkRoles(["admin"]), upload.any(), productController.updateProduct);
+// patch pour modifier un produit
+router.patch(
+  "/:id",
+  checkRoles(["admin"]),
+  upload.any(),
+  productController.updateProduct
+);
 
 /**
  * @swagger
@@ -115,5 +137,13 @@ router.patch("/:id", checkRoles(["admin"]), upload.any(), productController.upda
  *     tags: [Products]
  */
 router.delete("/:id", checkRoles(["admin"]), productController.deleteProduct);
+
+// soft delete : suppression douce = on archive le produit avec available false pour le sortir du catalogue mais on garde la trace
+// PATCH /products/:id/archive
+router.patch(
+  "/:id/archive",
+  checkRoles(["admin"]),
+  productController.archiveProduct
+);
 
 export default router;

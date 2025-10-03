@@ -9,12 +9,12 @@ const __dirname = path.dirname(__filename);
 // Config stockage (ici en local dans /uploads)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../../uploads");
+    const uploadPath = path.join(__dirname, "../../uploads/arbres");
     // crée le dossier si inexistant
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
-    cb(null, "uploads/"); // dossier où stocker
+    cb(null, "uploads/arbres"); // dossier où stocker
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);

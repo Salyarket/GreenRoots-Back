@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import BaseController from "./base.controller.js";
 import { parseIdFromParams } from "../utils/zod.js";
+import { parseOrder } from "../utils/Parser.js";
 import { Pagination } from "../schemas/pagination.schema.js";
 import {
+  idParamSchema,
   productDbSchema,
   productSchemaForCreate,
   productSchemaForUpdate,
@@ -20,6 +22,35 @@ class ProductController extends BaseController {
   constructor() {
     super(prisma.product, "product", productDbSchema);
   }
+
+  // pour admin, récupère tous les produits meme ceux non available (pour infor quand produit = available = false ca veut dire qu'on la soft deleted)
+  getAllAvailableWithPagination = async (req: any, res: any, next: any) => {
+    try {
+      const { page, limit, sortBy, sortOrder } = await Pagination(req.query);
+
+      const [items, total] = await Promise.all([
+        this.model.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: parseOrder(sortBy, sortOrder),
+          where: { available: true },
+        }),
+        this.model.count({ where: { available: true } }),
+      ]);
+
+      return res.json({
+        data: items,
+        pagination_State: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   getOneProductWithLocations = async (req: any, res: any) => {
     const productId = await parseIdFromParams(req.params.id);
@@ -69,9 +100,14 @@ class ProductController extends BaseController {
       const product = await prisma.product.create({ data: imgPath });
 
       res.status(201).json(product);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === "P2002") {
+        return res
+          .status(409)
+          .json({ error: "Slug déjà utilisé, choisissez un autre nom" });
+      }
       console.error(error);
-      res.status(400).json({ error: "données invalides" });
+      res.status(500).json({ error: "Erreur serveur" });
     }
   };
 
@@ -167,11 +203,41 @@ class ProductController extends BaseController {
         deletedImages: product.image_urls,
       });
     } catch (error: any) {
+      console.error("Erreur Prisma deleteProduct:", error);
+
+      if (error.code === "P2025") {
+        return res.status(404).json({ error: "Produit non trouvé" });
+      }
+      res.status(500).json({
+        error: "Erreur Serveur controller delete product",
+        details: error.message,
+      });
+    }
+  };
+
+  // soft delete le product avec un archive (available = false) donc on le sort du catalogue mais on garde une trace d'historique pour garder la ligne des les commandes du client
+  archiveProduct = async (req: any, res: any) => {
+    try {
+      const { id } = idParamSchema.parse(req.params);
+
+      const updated = await prisma.product.update({
+        where: { id },
+        data: { available: false },
+      });
+
+      res.json({
+        message: `Produit ${updated.name} (id ${updated.id}) archivé avec succès`,
+        product: updated,
+      });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({ error: "Id du produit invalide" });
+      }
       if (error.code === "P2025") {
         return res.status(404).json({ error: "Produit non trouvé" });
       }
       console.error(error);
-      res.status(500).json({ error: "Erreur Serveur" });
+      res.status(500).json({ error: "Erreur serveur soft delete" });
     }
   };
 }

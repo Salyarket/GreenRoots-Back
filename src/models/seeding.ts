@@ -127,20 +127,25 @@ async function main() {
         description:
           "Arbre majestueux d'Europe, symbole de longévité et de biodiversité.",
         image_urls: [
-          "chene-pedoncule.webp",
-          "chene-pedoncule_2.webp",
-          "chene-pedoncule_3.webp",
+          "uploads/arbres/chene-pedoncule.webp",
+          "uploads/arbres/chene-pedoncule_2.webp",
+          "uploads/arbres/chene-pedoncule_3.webp",
         ],
         stock: 0,
         scientific_name: "Quercus robur",
         carbon: 30,
+        available: false,
       },
       {
         name: "Hêtre commun",
         slug: "hetre",
         price: 80,
         description: "Arbre élégant très répandu dans les forêts françaises.",
-        image_urls: ["hetre.webp", "hetre_2.webp", "hetre_3.webp"],
+        image_urls: [
+          "uploads/arbres/hetre.webp",
+          "uploads/arbres/hetre_2.webp",
+          "uploads/arbres/hetre_3.webp",
+        ],
         stock: 1,
         scientific_name: "Fagus sylvatica",
         carbon: 25,
@@ -150,7 +155,10 @@ async function main() {
         slug: "sapin",
         price: 85,
         description: "Conifère emblématique des Vosges et des Alpes.",
-        image_urls: ["sapin.webp", "sapin_2.webp"],
+        image_urls: [
+          "uploads/arbres/sapin.webp",
+          "uploads/arbres/sapin_2.webp",
+        ],
         stock: 70,
         scientific_name: "Abies alba",
         carbon: 28,
@@ -161,7 +169,10 @@ async function main() {
         price: 95,
         description:
           "Arbre producteur de châtaignes, très apprécié en Ardèche et en Corse.",
-        image_urls: ["chataignier.webp", "chataignier_2.webp"],
+        image_urls: [
+          "uploads/arbres/chataignier.webp",
+          "uploads/arbres/chataignier_2.webp",
+        ],
         stock: 60,
         scientific_name: "Castanea sativa",
         carbon: 27,
@@ -172,7 +183,7 @@ async function main() {
         price: 75,
         description:
           "Arbre à croissance rapide, souvent utilisé pour le reboisement.",
-        image_urls: ["peuplier.webp"],
+        image_urls: ["uploads/arbres/peuplier.webp"],
         stock: 120,
         scientific_name: "Populus alba",
         carbon: 22,
@@ -182,7 +193,7 @@ async function main() {
         slug: "frene",
         price: 85,
         description: "Arbre résistant et utile pour la biodiversité.",
-        image_urls: ["frene.webp"],
+        image_urls: ["uploads/arbres/frene.webp"],
         stock: 90,
         scientific_name: "Fraxinus excelsior",
         carbon: 23,
@@ -193,7 +204,7 @@ async function main() {
         price: 100,
         description:
           "Arbre noble, jadis répandu dans les campagnes françaises.",
-        image_urls: ["orme.webp"],
+        image_urls: ["uploads/arbres/orme.webp"],
         stock: 50,
         scientific_name: "Ulmus minor",
         carbon: 26,
@@ -204,7 +215,7 @@ async function main() {
         price: 95,
         description:
           "Arbre d'alignement typique des routes et places en Europe.",
-        image_urls: ["platane.webp"],
+        image_urls: ["uploads/arbres/platane.webp"],
         stock: 70,
         scientific_name: "Platanus acerifolia",
         carbon: 24,
@@ -215,7 +226,11 @@ async function main() {
         price: 85,
         description:
           "Arbre ornemental et mellifère, apprécié pour ses fleurs apaisantes.",
-        image_urls: ["tilleul.webp", "tilleul_2.webp", "tilleul_3.webp"],
+        image_urls: [
+          "uploads/arbres/tilleul.webp",
+          "uploads/arbres/tilleul_2.webp",
+          "uploads/arbres/tilleul_3.webp",
+        ],
         stock: 100,
         scientific_name: "Tilia cordata",
         carbon: 21,
@@ -226,9 +241,9 @@ async function main() {
         price: 70,
         description: "Arbre pionnier reconnaissable à son écorce blanche.",
         image_urls: [
-          "bouleau-verruqueux.webp",
-          "bouleau_verruqueux_2.webp",
-          "bouleau_verruqueux_3.webp",
+          "uploads/arbres/bouleau-verruqueux.webp",
+          "uploads/arbres/bouleau_verruqueux_2.webp",
+          "uploads/arbres/bouleau_verruqueux_3.webp",
         ],
         stock: 110,
         scientific_name: "Betula pendula",
@@ -243,9 +258,9 @@ async function main() {
         description:
           "Arbre majestueux aux grandes feuilles, très présent en Europe.",
         image_urls: [
-          "erable_sycomore.webp",
-          "erable_sycomore_2.webp",
-          "erable_sycomore_3.webp",
+          "uploads/arbres/erable_sycomore.webp",
+          "uploads/arbres/erable_sycomore_2.webp",
+          "uploads/arbres/erable_sycomore_3.webp",
         ],
         stock: 85,
         scientific_name: "Acer pseudoplatanus",
@@ -257,9 +272,9 @@ async function main() {
         price: 70,
         description: "Arbre aimant l'eau, fréquent le long des rivières.",
         image_urls: [
-          "aulne_glutineux.webp",
-          "aulne_glutineux_2.webp",
-          "aulne_glutineux_3.webp",
+          "uploads/arbres/aulne_glutineux.webp",
+          "uploads/arbres/aulne_glutineux_2.webp",
+          "uploads/arbres/aulne_glutineux_3.webp",
         ],
         stock: 75,
         scientific_name: "Alnus glutinosa",
@@ -272,9 +287,9 @@ async function main() {
         description:
           "Arbre ornemental très reconnaissable, souvent au bord de l'eau.",
         image_urls: [
-          "saule_pleureur.webp",
-          "saule_pleureur_2.webp",
-          "saule_pleureur_3.webp",
+          "uploads/arbres/saule_pleureur.webp",
+          "uploads/arbres/saule_pleureur_2.webp",
+          "uploads/arbres/saule_pleureur_3.webp",
         ],
         stock: 60,
         scientific_name: "Salix babylonica",
@@ -287,9 +302,9 @@ async function main() {
         description:
           "Conifère emblématique, originaire d'Afrique du Nord mais présent en France.",
         image_urls: [
-          "cedre_atlas.webp",
-          "cedre_atlas_2.webp",
-          "cedre_atlas_3.webp",
+          "uploads/arbres/cedre_atlas.webp",
+          "uploads/arbres/cedre_atlas_2.webp",
+          "uploads/arbres/cedre_atlas_3.webp",
         ],
         stock: 50,
         scientific_name: "Cedrus atlantica",
@@ -302,9 +317,9 @@ async function main() {
         description:
           "Arbre produisant des noix, apprécié pour son bois précieux.",
         image_urls: [
-          "noyer_commun 1.webp",
-          "noyer_commun_2.webp",
-          "noyer_commun_3.webp",
+          "uploads/arbres/noyer_commun 1.webp",
+          "uploads/arbres/noyer_commun_2.webp",
+          "uploads/arbres/noyer_commun_3.webp",
         ],
         stock: 65,
         scientific_name: "Juglans regia",
@@ -316,9 +331,9 @@ async function main() {
         price: 85,
         description: "Arbre robuste souvent utilisé en haies et alignements.",
         image_urls: [
-          "charme_commun.webp",
-          "charme_commun_2.webp",
-          "charme_commun_3.webp",
+          "uploads/arbres/charme_commun.webp",
+          "uploads/arbres/charme_commun_2.webp",
+          "uploads/arbres/charme_commun_3.webp",
         ],
         stock: 90,
         scientific_name: "Carpinus betulus",

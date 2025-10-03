@@ -21,7 +21,6 @@ router.get("/api/hello", (req, res) => {
 });
 
 router.use("/products", productRouter);
-// router.use("/products", productRouter);
 
 router.use("/auth", authRouter);
 

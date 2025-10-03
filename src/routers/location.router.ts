@@ -35,8 +35,12 @@ router.get("/", checkRoles(["admin"]), locationController.getAll);
  *       200:
  *         description: Liste des localisations
  */
-router.get("/pagination",checkRoles(["admin"]), locationController.getAllWithPagination);
-
+router.get(
+  "/pagination",
+  checkRoles(["admin"]),
+  locationController.getAllWithPagination
+);
+    
 /**
  * @swagger
  * /locations/{id}:
@@ -95,6 +99,46 @@ router.post("/", checkRoles(["admin"]), locationController.create);
 
 /**
  * @swagger
+ * /locations/{id}/products:
+ *   post:
+ *     summary: Ajouter un produit à une localisation
+ *     description: Associe un produit à la localisation spécifiée
+ *     tags: [Locations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la localisation
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - product_id
+ *             properties:
+ *               product_id:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: Produit ajouté à la localisation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LocationWithProducts'
+ *       400:
+ *         description: Données invalides
+ *       404:
+ *         description: Localisation non trouvée
+ */
+router.post("/:id/products", checkRoles(["admin"]) , locationController.addProduct);
+
+/**
+ * @swagger
  * /locations/{id}:
  *   patch:
  *     summary: Mettre à jour un terrain
@@ -132,6 +176,52 @@ router.patch("/:id", checkRoles(["admin"]), locationController.update);
 
 /**
  * @swagger
+ * /locations/{id}/products/{relatedId}:
+ *   patch:
+ *     summary: Modifier un produit lié à une localisation
+ *     description: Modifie la liaison entre un produit et une localisation
+ *     tags: [Locations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la localisation
+ *       - in: path
+ *         name: relatedId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du produit actuel à modifier
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - product_id
+ *             properties:
+ *               product_id:
+ *                 type: integer
+ *                 example: 6
+ *     responses:
+ *       200:
+ *         description: Produit modifié dans la localisation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LocationWithProducts'
+ *       400:
+ *         description: Données invalides
+ *       404:
+ *         description: Localisation ou produit non trouvé
+ */
+router.patch("/:id/products/:relatedId", checkRoles(["admin"]) , locationController.updateProduct);
+
+/**
+ * @swagger
  * /locations/{id}:
  *   delete:
  *     summary: Supprimer un terrain
@@ -154,5 +244,41 @@ router.patch("/:id", checkRoles(["admin"]), locationController.update);
  *         description: Erreur serveur
  */
 router.delete("/:id", checkRoles(["admin"]), locationController.deleteById);
+
+/**
+ * @swagger
+ * /locations/{id}/products/{relatedId}:
+ *   delete:
+ *     summary: Supprimer un produit d’une localisation
+ *     description: Supprime la liaison entre un produit et une localisation
+ *     tags: [Locations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la localisation
+ *       - in: path
+ *         name: relatedId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du produit à retirer
+ *     responses:
+ *       200:
+ *         description: Produit retiré de la localisation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Relation supprimée avec succès"
+ *       404:
+ *         description: Localisation ou produit non trouvé
+ */
+router.delete("/:id/products/:relatedId", checkRoles(["admin"]) , locationController.removeProduct);
 
 export default router;
