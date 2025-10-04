@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import BaseController from "./base.controller.js";
 import { parseIdFromParams } from "../utils/zod.js";
 import { parseOrder } from "../utils/Parser.js";
@@ -15,6 +15,8 @@ import {
   deleteFiles,
 } from "../utils/imgUpload.js";
 import { TextToSlugCreate, TextToSlugUpdate } from "../utils/TextToSlug.js";
+import path from "path";
+import fs from "fs";
 
 const prisma = new PrismaClient();
 
@@ -113,51 +115,82 @@ class ProductController extends BaseController {
 
   updateProduct = async (req: any, res: any) => {
     try {
-      // 1. Vérifier que l'id est bien un nombre
+      // 1) ID valide
       const productId = Number(req.params.id);
-      if (isNaN(productId)) {
+      if (Number.isNaN(productId)) {
         return res.status(400).json({ error: "Id du produit invalide" });
       }
 
-      // 2. Validation du body
-      const data = await productSchemaForUpdate.parseAsync(req.body);
+      // 2) Valider le body (ne prends que ce que ton schema autorise)
+      const parsed = await productSchemaForUpdate.parseAsync(req.body);
 
-      // 3. Charger le produit existant pour le traitement du slug et des images
-      const existingProduct = await prisma.product.findUnique({
+      // 3) Charger l’existant
+      const existing = await prisma.product.findUnique({
         where: { id: productId },
       });
-      if (!existingProduct) {
+      if (!existing)
         return res.status(404).json({ error: "Produit non trouvé" });
+
+      // 4) Mettre à jour le slug si name a changé
+      const withSlug = TextToSlugUpdate(existing, parsed);
+
+      // 5) Gestion des images si de nouveaux fichiers ont été envoyés
+      const files = (req.files as Express.Multer.File[]) ?? [];
+      let newImageUrls: string[] | undefined;
+
+      if (files.length > 0) {
+        // a) supprimer les anciennes images du disque
+        for (const p of existing.image_urls ?? []) {
+          // normaliser et construire le chemin absolu
+          const normalized = p.replace(/\\/g, "/");
+          const fullPath = path.isAbsolute(normalized)
+            ? normalized
+            : path.join(process.cwd(), normalized);
+
+          try {
+            if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+          } catch (e) {
+            // log soft, on continue quand même
+            console.warn("Suppression fichier échouée:", fullPath, e);
+          }
+        }
+
+        // b) remplacer par les nouvelles (on stocke le path tel que Multer l’a écrit)
+        newImageUrls = files.map((f) => f.path.replace(/\\/g, "/"));
       }
 
-      // 4. Addapter le slug si le nom du produit change
-      const dataWithSlug = TextToSlugUpdate(existingProduct, data);
+      // 6) Construire un objet **propre** pour Prisma (pas de replace_images, etc.)
+      const updateData: Prisma.ProductUpdateInput = {
+        name: withSlug.name,
+        slug: withSlug.slug,
+        price: withSlug.price as any, // Decimal compatible: string | number | Prisma.Decimal
+        description: withSlug.description,
+        available: withSlug.available,
+        stock: withSlug.stock,
+        scientific_name:
+          withSlug.scientific_name && withSlug.scientific_name.trim() !== ""
+            ? withSlug.scientific_name
+            : null,
+        carbon: withSlug.carbon ?? null,
+        ...(newImageUrls ? { image_urls: newImageUrls } : {}), // on ne touche pas si pas de nouvelles images
+      };
 
-      // 5. Remplacer ou ajouter des images
-      const dataWithImg = ImgUpdatePath(
-        existingProduct,
-        dataWithSlug,
-        req.files as Express.Multer.File[]
-      );
-
-      const updatedProduct = await prisma.product.update({
+      // 7) Update DB
+      const updated = await prisma.product.update({
         where: { id: productId },
-        data: dataWithImg,
+        data: updateData,
       });
 
-      res.status(200).json(updatedProduct);
+      return res.status(200).json(updated);
     } catch (error: any) {
       if (error.name === "ZodError") {
         return res.status(400).json(error.issues);
       }
-      if (error.message?.includes("image")) {
-        return res.status(400).json({ error: error.message });
-      }
-      if (error.code === "P2025") {
-        return res.status(404).json({ error: "Produit non trouvé" });
+      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
+        return res.status(409).json({ error: "Slug déjà utilisé" });
       }
       console.error(error);
-      res.status(500).json({ error: "Erreur serveur" });
+      return res.status(500).json({ error: "Erreur serveur" });
     }
   };
 
