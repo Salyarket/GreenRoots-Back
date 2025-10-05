@@ -22,12 +22,30 @@ class OrderController extends BaseController {
     try {
       const data = await createOrderSchema.parseAsync(req.body);
 
+      // data.items doit contenir le panier : [{ productId, quantity, unitPrice }]
+      if (
+        !data.items ||
+        !Array.isArray(data.items) ||
+        data.items.length === 0
+      ) {
+        return res
+          .status(400)
+          .json({ message: "La commande doit contenir au moins un produit" });
+      }
       const createdOrder = await this.model.create({
         data: {
           status: data.status,
           total: data.total,
           user: { connect: { id: data.userId } },
+          items: {
+            create: data.items.map((item: any) => ({
+              product_id: item.productId,
+              quantity: item.quantity,
+              unit_price: item.unitPrice,
+            })),
+          },
         },
+        include: this.relations,
       });
 
       res.status(201).json(createdOrder);
@@ -49,7 +67,7 @@ class OrderController extends BaseController {
 
       const updatedOrder = await this.model.update({
         where: { id: order_id },
-        data
+        data,
       });
 
       res.json(updatedOrder);
