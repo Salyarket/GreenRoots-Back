@@ -16,7 +16,13 @@ const locationProductSchema = z.object({
 
 class LocationController extends BaseController {
   constructor() {
-    super(prisma.location, "location", locationsSchema);
+    super(prisma.location, "location", locationsSchema, {
+      productLocations: {
+        include: {
+          product: true,
+        },
+      },
+    });
   }
   
   // Ajout d’une liaison localisation à un produit

@@ -69,6 +69,18 @@ export default class BaseController {
     }
   };
 
+  getAllWithRelation = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const items = await this.model.findMany({
+        include: this.relations,
+      });
+
+      res.status(200).json(items);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemId = parseInt(req.params.id);
@@ -174,37 +186,37 @@ export default class BaseController {
 
   // Modification : gestion de la table relationnelle
   updateRelation =
-  (relationName: string, compositeKey: string, schema?: any) =>
-  async (req, res, next) => {
-    try {
-      const { id, relatedId } = req.params;
-      let validatedBody = req.body;
-      if (schema) validatedBody = schema.parse(req.body);
+    (relationName: string, compositeKey: string, schema?: any) =>
+      async (req, res, next) => {
+        try {
+          const { id, relatedId } = req.params;
+          let validatedBody = req.body;
+          if (schema) validatedBody = schema.parse(req.body);
 
-      const relationData: Record<string, any> = {};
-      Object.keys(validatedBody).forEach((field) => {
-        relationData[field] = validatedBody[field];
-      });
+          const relationData: Record<string, any> = {};
+          Object.keys(validatedBody).forEach((field) => {
+            relationData[field] = validatedBody[field];
+          });
 
-      const updatedItem = await this.model.update({
-        where: { id: Number(id) },
-        data: {
-          [relationName]: {
-            update: {
-              where: { [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) } },
-              data: relationData,
+          const updatedItem = await this.model.update({
+            where: { id: Number(id) },
+            data: {
+              [relationName]: {
+                update: {
+                  where: { [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) } },
+                  data: relationData,
+                },
+              },
             },
-          },
-        },
-        include: { [relationName]: true },
-      });
+            include: { [relationName]: true },
+          });
 
-      res.status(200).json(updatedItem);
-    } catch (error) {
-      if (error.name === "ZodError") return res.status(400).json({ message: error.errors });
-      next(error);
-    }
-  };
+          res.status(200).json(updatedItem);
+        } catch (error) {
+          if (error.name === "ZodError") return res.status(400).json({ message: error.errors });
+          next(error);
+        }
+      };
 
   deleteById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -229,29 +241,28 @@ export default class BaseController {
 
   // Supression : gestion de la table relationnelle
   removeRelation =
-  (relationName: string, compositeKey: string) =>
-  async (req, res, next) => {
-    try {
-      const { id, relatedId } = req.params;
+    (relationName: string, compositeKey: string) =>
+      async (req, res, next) => {
+        try {
+          const { id, relatedId } = req.params;
 
-      const updatedItem = await this.model.update({
-        where: { id: Number(id) },
-        data: {
-          [relationName]: {
-            delete: {
-              [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) },
+          const updatedItem = await this.model.update({
+            where: { id: Number(id) },
+            data: {
+              [relationName]: {
+                delete: {
+                  [compositeKey]: { product_id: Number(relatedId), location_id: Number(id) },
+                },
+              },
             },
-          },
-        },
-        include: { [relationName]: true },
-      });
+            include: { [relationName]: true },
+          });
 
-      res.status(200).json(updatedItem);
-    } catch (error) {
-      next(error);
-    }
-  };
+          res.status(200).json(updatedItem);
+        } catch (error) {
+          next(error);
+        }
+      };
 }
 
-  // Supression : gestion de la table relationnelle
-  
+// Supression : gestion de la table relationnelle

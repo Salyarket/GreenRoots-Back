@@ -36,11 +36,34 @@ router.get("/", checkRoles(["admin"]), locationController.getAll);
  *         description: Liste des localisations
  */
 router.get(
-  "/pagination",
-  checkRoles(["admin"]),
-  locationController.getAllWithPagination
+    "/pagination",
+    checkRoles(["admin"]),
+    locationController.getAllWithPagination
 );
-    
+
+/**
+ * @swagger
+ * /locations/with-relations:
+ *   get:
+ *     summary: Récupérer toutes les localisations avec leurs produits liés
+ *     description: Retourne toutes les localisations ainsi que les produits associés via la table pivot product_location
+ *     tags: [Locations]
+ *     responses:
+ *       200:
+ *         description: Liste complète des localisations avec relations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/LocationWithProducts'
+ */
+router.get(
+    "/with-relations",
+    checkRoles(["admin"]),
+    locationController.getAllWithRelation
+);
+
 /**
  * @swagger
  * /locations/{id}:
@@ -135,7 +158,7 @@ router.post("/", checkRoles(["admin"]), locationController.create);
  *       404:
  *         description: Localisation non trouvée
  */
-router.post("/:id/products", checkRoles(["admin"]) , locationController.addProduct);
+router.post("/:id/products", checkRoles(["admin"]), locationController.addProduct);
 
 /**
  * @swagger
@@ -218,7 +241,7 @@ router.patch("/:id", checkRoles(["admin"]), locationController.update);
  *       404:
  *         description: Localisation ou produit non trouvé
  */
-router.patch("/:id/products/:relatedId", checkRoles(["admin"]) , locationController.updateProduct);
+router.patch("/:id/products/:relatedId", checkRoles(["admin"]), locationController.updateProduct);
 
 /**
  * @swagger
@@ -279,6 +302,6 @@ router.delete("/:id", checkRoles(["admin"]), locationController.deleteById);
  *       404:
  *         description: Localisation ou produit non trouvé
  */
-router.delete("/:id/products/:relatedId", checkRoles(["admin"]) , locationController.removeProduct);
+router.delete("/:id/products/:relatedId", checkRoles(["admin"]), locationController.removeProduct);
 
 export default router;
