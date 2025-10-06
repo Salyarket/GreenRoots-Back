@@ -1,8 +1,36 @@
 import { Router } from "express";
 import { checkRoles } from "../middlewares/access-control.middleware.js";
 import orderController from "../controllers/order.controller.js";
+import orderItemController from "../controllers/order-item.controller.js";
 
 const router = Router();
+
+/**
+ * @swagger
+ * /orders/{id}/items:
+ *   get:
+ *     summary: Récupérer tous les produits d’une commande
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Liste des produits de la commande
+ *       404:
+ *         description: Aucun produit trouvé
+ */
+// Route spécifique sous-ressource : items
+router.get(
+  "/:id/items",
+  checkRoles(["member", "admin"]),
+  orderItemController.getProductByOrderId
+);
 
 /**
  * @swagger
@@ -18,29 +46,6 @@ const router = Router();
  */
 // Récup toutes les commandes (admin only, back-office)
 router.get("/", checkRoles(["admin"]), orderController.getAll);
-
-/**
- * @swagger
- * /orders/{id}:
- *   get:
- *     summary: Récupérer une commande par ID
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Commande trouvée
- *       404:
- *         description: Commande introuvable
- */
-// voir commande complète avec user + type + items
-router.get("/:id", checkRoles(["member", "admin"]), orderController.getById);
 
 /**
  * @swagger
@@ -94,6 +99,29 @@ router.get(
     });
   }
 );
+
+/**
+ * @swagger
+ * /orders/{id}:
+ *   get:
+ *     summary: Récupérer une commande par ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Commande trouvée
+ *       404:
+ *         description: Commande introuvable
+ */
+// voir commande complète avec user + type + items
+router.get("/:id", checkRoles(["member", "admin"]), orderController.getById);
 
 /**
  * @swagger
