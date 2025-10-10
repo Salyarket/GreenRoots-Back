@@ -20,7 +20,7 @@ router.get("/", productController.getAll);
 
 /**
  * @swagger
- * /products/pagination:
+ * /products/pagination/available:
  *   get:
  *     summary: Récupérer tous les produits avec pagination et trie ASC et DESC sur les champs de l'entité product (back-office)
  *     tags: [Products]
@@ -35,6 +35,18 @@ router.get(
 );
 
 // admin récup tous les produits meme non dispo à la vente pour crud
+/**
+ * @swagger
+ * /products/pagination/all:
+ *   get:
+ *     summary: Récupérer tous les produits (admin, pagination)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste de tous les produits
+ */
 router.get(
   "/pagination/all",
   checkRoles(["admin"]),
@@ -83,10 +95,23 @@ router.get("/:id", productController.getById);
 
 /**
  * @swagger
- * /products/{id}:
+ * /products:
  *   post:
  *     summary: Créer un produit (admin only)
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Product_create'
+ *     responses:
+ *       201:
+ *         description: Produit créé
+ *       400:
+ *         description: Requête invalide
  */
 router.post(
   "/",
@@ -135,11 +160,32 @@ router.patch(
  *   delete:
  *     summary: supprimer un produit par son ID (admin only)
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Produit supprimé
+ *       404:
+ *         description: Produit introuvable
  */
 router.delete("/:id", checkRoles(["admin"]), productController.deleteProduct);
 
 // soft delete : suppression douce = on archive le produit avec available false pour le sortir du catalogue mais on garde la trace
 // PATCH /products/:id/archive
+/**
+ * @swagger
+ * /products/{id}/archive:
+ *   patch:
+ *     summary: archiver un produit par son ID (admin only)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Produit archivé
+ *       404:
+ *         description: Produit introuvable
+ */
 router.patch(
   "/:id/archive",
   checkRoles(["admin"]),

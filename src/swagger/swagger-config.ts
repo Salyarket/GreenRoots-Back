@@ -42,53 +42,102 @@ const options: swaggerJsdoc.Options = {
           },
           required: ["name", "latitude", "longitude"],
         },
+        Product_create: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              example: "Érable du Canada",
+            },
+            price: {
+              type: "integer",
+              example: 80,
+            },
+            description: {
+              type: "string",
+              example: "Arbre aux feuilles rouges à l’automne",
+            },
+            images: {
+              type: "array",
+              items: {
+                type: "string",
+                example: "erable.jpg",
+                format: "binary",
+              },
+              description: "Images du produit (Jusqu'à 3 images possibles)",
+            },
+            replace_images: {
+              type: "boolean",
+              example: true,
+              description:
+                "la valeur true remplace les images et false en ajoute(s)",
+            },
+            available: {
+              type: "boolean",
+              example: true,
+            },
+            stock: {
+              type: "integer",
+              example: 40,
+            },
+            scientific_name: {
+              type: "string",
+              example: "Acer saccharum",
+            },
+            carbon: {
+              type: "integer",
+              example: 25,
+            },
+          },
+          required: ["name", "price", "description", "available", "stock"],
+        },
         Product_patch: {
           type: "object",
-            properties: {
-              name: {
-                type: "string",
-                example: "Érable du Canada",
-              },
-              price: {
-                type: "integer",
-                example: 80,
-              },
-              description: {
-                type: "string",
-                example: "Arbre aux feuilles rouges à l’automne",
-              },
-              images: {
-                type: "array",
-                items:{
-                  type: "string",
-                  example: "erable.jpg",
-                  format: "binary",
-                },
-                description: "Images du produit (Jusqu'à 3 images possibles)",
-              },
-              replace_images: {
-                type: "boolean",
-                example: true,
-                description: "la valeur true remplace les images et false en ajoute(s)",
-              },
-              available: {
-                type: "boolean",
-                example: true,
-              },
-              stock: {
-                type: "integer",
-                example: 40,
-              },
-              scientific_name: {
-                type: "string",
-                example: "Acer saccharum",
-              },
-              carbon: {
-                type: "integer",
-                example: 25,
-              },
+          properties: {
+            name: {
+              type: "string",
+              example: "Érable du Canada",
             },
-            required: ["name", "price", "description", "available", "stock"],
+            price: {
+              type: "integer",
+              example: 80,
+            },
+            description: {
+              type: "string",
+              example: "Arbre aux feuilles rouges à l’automne",
+            },
+            images: {
+              type: "array",
+              items: {
+                type: "string",
+                example: "erable.jpg",
+                format: "binary",
+              },
+              description: "Images du produit (Jusqu'à 3 images possibles)",
+            },
+            replace_images: {
+              type: "boolean",
+              example: true,
+              description:
+                "la valeur true remplace les images et false en ajoute(s)",
+            },
+            available: {
+              type: "boolean",
+              example: true,
+            },
+            stock: {
+              type: "integer",
+              example: 40,
+            },
+            scientific_name: {
+              type: "string",
+              example: "Acer saccharum",
+            },
+            carbon: {
+              type: "integer",
+              example: 25,
+            },
+          },
         },
         UserType: {
           type: "object",
