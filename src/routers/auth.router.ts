@@ -83,7 +83,43 @@ router.post("/register", userController.register);
 
 router.post("/login", userController.login);
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Déconnexion de l'utilisateur
+ *     tags: [Authentification]
+ *     responses:
+ *       200:
+ *         description: Déconnexion réussie
+ *       401:
+ *         description: Non autorisé
+ */
+
 router.post("/logout", userController.logoutUser);
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Renouvellement du token d'accès
+ *     tags: [Authentification]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: "eyJrq8J43iMdM7bkNx3wcM76C9hc7..."
+ *     responses:
+ *       200:
+ *         description: Nouveau token généré
+ *       401:
+ *         description: Token invalide ou expiré
+ */
 
 router.post("/refresh", userController.refreshAccessToken);
 
