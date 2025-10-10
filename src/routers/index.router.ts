@@ -6,7 +6,6 @@ import orderRouter from "./orders.router.js";
 import userRouter from "./user.router.js";
 import loggerRouter from "./logger.router.js";
 
-// import { router as productsRouter } from "./products.router.js";
 import productRouter from "./product.router.js";
 
 export const router = Router();
@@ -24,12 +23,12 @@ router.use("/products", productRouter);
 
 router.use("/auth", authRouter);
 
-router.use("/locations", locationRouter); //Oumaïma
+router.use("/locations", locationRouter);
 
-router.use("/user-types", userTypesRouter); //Adrien
+router.use("/user-types", userTypesRouter);
 
-router.use("/orders", orderRouter); //Tarig
+router.use("/orders", orderRouter);
 
 router.use("/users", userRouter);
 
-router.use("/logs", loggerRouter); // Saliha
+router.use("/logs", loggerRouter);
