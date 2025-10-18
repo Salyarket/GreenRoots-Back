@@ -1,8 +1,10 @@
 import fs from "fs";
 import { z } from "zod";
 import path from "path";
-import { productSchemaForCreate, productSchemaForUpdate } from "../schemas/product.schema.js";
-
+import {
+  productSchemaForCreate,
+  productSchemaForUpdate,
+} from "../schemas/product.schema.js";
 
 export function ImgCreatePath(
   data: z.infer<typeof productSchemaForCreate>,
@@ -20,11 +22,10 @@ export function ImgUpdatePath(
   data: z.infer<typeof productSchemaForUpdate>,
   files?: Express.Multer.File[]
 ) {
-
   // replace_images booléén qui a "true" remplace les images et a false "ajoute les images"
   const { replace_images, ...rest } = data;
 
-  const updated = { ...rest  };
+  const updated = { ...rest };
 
   // Gestion des images uploadées dans l'update
   const newImagePaths = files ? files.map((f) => f.path) : [];
@@ -38,7 +39,9 @@ export function ImgUpdatePath(
     } else {
       if (existing.image_urls.length + newImagePaths.length > 3) {
         throw new Error(
-          `Vous pouvez seulement ajouter ${3 - existing.image_urls.length} image(s)`
+          `Vous pouvez seulement ajouter ${
+            3 - existing.image_urls.length
+          } image(s)`
         );
       }
       updated.image_urls = [...existing.image_urls, ...newImagePaths];
@@ -47,7 +50,6 @@ export function ImgUpdatePath(
 
   return updated;
 }
-
 
 export async function deleteFiles(paths: string[]) {
   await Promise.all(
