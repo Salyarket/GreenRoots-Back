@@ -36,9 +36,9 @@ git push
 # Mettre sa feature à jour avec dev
 
 git checkout dev
-git pull origin dev # récupérer les derniers changements de l’équipe
+git pull origin dev (récupérer les derniers changements de l’équipe)
 git checkout feature/ma-feature
-git merge dev # fusionner dev dans ma feature
+git merge dev (fusionner dev dans ma feature)
 résoudre les conflits si besoin
 
 
