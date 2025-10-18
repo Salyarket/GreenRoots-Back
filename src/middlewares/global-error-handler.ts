@@ -3,7 +3,13 @@ import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 import z from "zod";
 
-export function globalErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+// mdw signature 4 paramètres
+export function globalErrorHandler(
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   console.error(error);
 
   // Gestion des erreurs Zod - 400

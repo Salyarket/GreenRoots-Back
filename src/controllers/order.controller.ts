@@ -2,7 +2,11 @@ import {
   createOrderSchema,
   updateOrderSchema,
 } from "../schemas/order.schema.js";
-import { NotFoundError } from "../lib/errors.js";
+import {
+  BadRequestError,
+  HttpClientError,
+  NotFoundError,
+} from "../lib/errors.js";
 import { prisma } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 import BaseController from "./base.controller.js";
@@ -17,35 +21,66 @@ class OrderController extends BaseController {
     super(prisma.order, "order", createOrderSchema, orderRelation);
   }
 
-  // CREATE an order
   createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await createOrderSchema.parseAsync(req.body);
 
-      // data.items doit contenir le panier : [{ productId, quantity, unitPrice }]
-      if (
-        !data.items ||
-        !Array.isArray(data.items) ||
-        data.items.length === 0
-      ) {
-        return res
-          .status(400)
-          .json({ message: "La commande doit contenir au moins un produit" });
+      const productIds = data.items.map((i) => i.productId);
+      const products = await prisma.product.findMany({
+        where: { id: { in: productIds } },
+        select: { id: true, stock: true, name: true },
+      });
+
+      const insufficientStock = data.items.filter((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        return !product || product.stock < item.quantity;
+      });
+
+      if (insufficientStock.length > 0) {
+        const message = insufficientStock
+          .map((item) => {
+            const p = products.find((p) => p.id === item.productId);
+            return `${
+              p?.name || "Produit inconnu"
+            } - stock insuffisant (demande: ${item.quantity}, stock: ${
+              p?.stock
+            })`;
+          })
+          .join(", ");
+
+        throw new BadRequestError(message);
       }
-      const createdOrder = await this.model.create({
-        data: {
-          status: data.status,
-          total: data.total,
-          user: { connect: { id: data.userId } },
-          items: {
-            create: data.items.map((item: any) => ({
-              product_id: item.productId,
-              quantity: item.quantity,
-              unit_price: item.unitPrice,
-            })),
+
+      // Une transaction en base de données, c’est un ensemble d’opérations qui doivent toutes réussir ou toutes échouer. (on ne veut surtout pas valider la commande si un seul des produits n'est pas dispo)
+      const createdOrder = await prisma.$transaction(async (tx) => {
+        // tx est une “connexion transactionnelle” fournie par Prisma.
+        // tx est comme une version temporaire de prisma qui travaille dans une transaction.
+        // Si une seule mise à jour échoue (ex. stock négatif, contrainte en BDD, etc.), tout est annulé :
+        // la commande n’est pas créée, le stock n’est pas modifié.
+        const order = await tx.order.create({
+          data: {
+            status: data.status,
+            total: data.total,
+            user: { connect: { id: data.userId } },
+            items: {
+              create: data.items.map((item) => ({
+                product_id: item.productId,
+                quantity: item.quantity,
+                unit_price: item.unitPrice,
+              })),
+            },
           },
-        },
-        include: this.relations,
+          include: { items: true, user: true },
+        });
+
+        for (const item of data.items) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { decrement: item.quantity } },
+          });
+        }
+
+        return order;
       });
 
       res.status(201).json(createdOrder);

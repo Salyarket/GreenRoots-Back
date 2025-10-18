@@ -18,6 +18,11 @@ import { TextToSlugCreate, TextToSlugUpdate } from "../utils/TextToSlug.js";
 import path from "path";
 import fs from "fs";
 
+// TRAVAIL TARIG AVEC OUMAMA , TARIG VA REVOIR PRODUCT CONTORLLER AVEC GESTION DES ERREUR ERROR.TS puis GLOBAL ERROR HANDLER
+// ex :catch (error) {
+//   next(error);
+// }
+
 const prisma = new PrismaClient();
 
 class ProductController extends BaseController {
@@ -54,6 +59,7 @@ class ProductController extends BaseController {
     }
   };
 
+  // TARIG REVOIR PERSO
   getOneProductWithLocations = async (req: any, res: any) => {
     const productId = await parseIdFromParams(req.params.id);
 

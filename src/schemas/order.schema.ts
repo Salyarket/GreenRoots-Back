@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createOrderSchema = z.object({
   status: z.enum(["pending", "paid", "cancelled"] as const, {
-    message: "Statut invalide : pending, paid ou cancelled",
+    message: "Statut invalide :  pending, paid ou cancelled",
   }),
   total: z
     .number()
