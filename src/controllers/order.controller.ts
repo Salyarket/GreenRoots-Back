@@ -40,10 +40,15 @@ class OrderController extends BaseController {
         const message = insufficientStock
           .map((item) => {
             const p = products.find((p) => p.id === item.productId);
-            return `${p?.name || "Produit inconnu"} - stock insuffisant`;
+            return `${
+              p?.name || "Produit inconnu"
+            } - stock insuffisant (demande: ${item.quantity}, stock: ${
+              p?.stock
+            })`;
           })
           .join(", ");
-        throw new BadRequestError("Stock insuffisant pour un produit");
+
+        throw new BadRequestError(message);
       }
 
       // Une transaction en base de données, c’est un ensemble d’opérations qui doivent toutes réussir ou toutes échouer. (on ne veut surtout pas valider la commande si un seul des produits n'est pas dispo)
