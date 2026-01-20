@@ -8,9 +8,9 @@ Comme ca via le schema.prisma on va pouvoir automatiquement créer la BDD greenr
 ---
 
 A partir de notre ModèlePhysiqueDeDonnées : create_tables.sql (create table User xxxxx pur sql )
-Nous avons convertis le fichier sql en fichier prisma : schema.prisma
-Car prisma n'a pas la même syntaxte que du SQL pur. GPT a fait la convertion.
-Cela va nous permettre à partir du shema.prisma de créer la BDD, générer la structure avec les tables et attributs et de pouvoir gérer les migrations lorsque nous souhaitons changer la BDD pour garder l'historique
+Nous avons convertis le fichier sql en fichier Prisma : schema.prisma
+Car prisma n'a pas la même syntaxte que du SQL pur. GPT a fait la conversion.
+Cela va nous permettre à partir du "shema.prisma" de créer la BDD, générer la structure avec les tables et attributs et de pouvoir gérer les migrations lorsque nous souhaitons changer la BDD pour garder l'historique
 
 ---
 
