@@ -1,0 +1,6 @@
+# lors de la construction de l'image docker ne pas garder : 
+.env 
+dist
+node_modules/
+.git
+.gitignore

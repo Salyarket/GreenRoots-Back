@@ -19,7 +19,7 @@ model UserType {
   label      String   @db.VarChar(255)
   tva_rate    Decimal  @db.Decimal(5, 2)
   created_at   DateTime  @default(now()) 
-  updated_at   DateTime  @updatedAt
+  updated_at   DateTime @updatedAt @db.Timestamptz(6)
 
   users User[]
 
@@ -38,13 +38,15 @@ model User {
   role        Role      @default(member)
   entity_name  String?   @db.VarChar(255)
   created_at   DateTime  @default(now()) 
-  updated_at   DateTime  @default(now()) 
+  updated_at  DateTime @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
 
   // Relations
   user_type_id  Int      
   userType    UserType  @relation(fields: [user_type_id], references: [id], onDelete: Restrict)
   orders      Order[]
   logs        Log[]
+  refresh_token RefreshToken[]
 
   @@map("user")
 }
@@ -69,7 +71,7 @@ model Product {
   scientific_name  String?   @db.VarChar(255) 
   carbon          Decimal?  @db.Decimal(10, 2)
   created_at   DateTime  @default(now()) 
-  updated_at   DateTime  @default(now()) 
+  updated_at  DateTime @updatedAt @db.Timestamptz(6)
 
   orderItems        OrderItem[]
   productLocations  ProductLocation[]
@@ -86,7 +88,7 @@ model Location {
   latitude   Float
   longitude  Float 
   created_at   DateTime  @default(now()) 
-  updated_at  DateTime   @default(now()) 
+  updated_at  DateTime @updatedAt @db.Timestamptz(6)
 
   productLocations ProductLocation[]
 
@@ -101,11 +103,11 @@ model Order {
   status     OrderStatus
   total      Decimal      @default(0.0) @db.Decimal(10, 2)
   created_at   DateTime  @default(now()) 
-  updated_at  DateTime   @default(now()) 
+  updated_at  DateTime @updatedAt @db.Timestamptz(6)
 
   // Relations
   user_id Int
-  user   User    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Restrict)
   items  OrderItem[]
 
   @@map("order")
@@ -141,7 +143,7 @@ model ProductLocation {
   product_id  Int 
   location_id Int 
   created_at   DateTime  @default(now()) 
-  updated_at  DateTime   @default(now()) 
+  updated_at  DateTime @updatedAt @db.Timestamptz(6)
 
   product  Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
   location Location @relation(fields: [location_id], references: [id], onDelete: Cascade)
@@ -180,4 +182,20 @@ enum LogSource {
   CRON
   FRONT
   BACK
+}
+
+// =======================================
+// TABLE refresh token
+// =======================================
+model RefreshToken{
+  id Int @id @default(autoincrement())
+  token String
+
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int
+
+  created_at   DateTime  @default(now())
+  expired_at   DateTime
+
+  @@map("refresh_token")
 }
