@@ -4,7 +4,7 @@ declare module "multer" {
   interface MulterFile {
     /** Nom du champ dans le formulaire */
     fieldname: string;
-    /** Nom du fichier sur le PC du client */
+    /** Nom du fichier sur l'ordinateur du client */
     originalname: string;
     /** Encodage */
     encoding: string;

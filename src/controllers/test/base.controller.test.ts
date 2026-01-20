@@ -2,7 +2,7 @@ import { test, mock } from "node:test";
 import assert from "node:assert";
 import BaseController from "../base.controller.js";
 
-test("Test getAll product", async () => {
+test("Test getAll products", async () => {
   const fakeData = [
     { id: 1, name: "Cerisier", price: 80 },
     { id: 2, name: "Pommier", price: 60 },

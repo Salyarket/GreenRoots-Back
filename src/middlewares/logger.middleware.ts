@@ -4,7 +4,7 @@ import { logger } from "../lib/log.js";
 // Morgan intercepte les informations des requêtes HTTP : je vais les transmettre à mon logger
 
 export const loggerMiddleware = morgan(
-  // tokens est un objet contenant les informations générées par Morgan
+  // Tokens est un objet contenant les informations générées par Morgan
   function (tokens, req, res) {
     return JSON.stringify({
       method: tokens.method(req, res),

@@ -25,6 +25,7 @@ export default class BaseController {
   }
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("GET ALL called for:", this.entityName);
     try {
       const items = await this.model.findMany({
         include: this.relations,

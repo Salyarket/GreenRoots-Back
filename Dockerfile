@@ -17,4 +17,5 @@ COPY . .
 EXPOSE 4000
 
 # Commande par défaut → lance ton serveur en mode dev
-CMD ["npm", "run", "dev:linux"]
+CMD ["sh","-lc","npx prisma generate --schema=./src/models/schema.prisma && npm run dev:linux"]
+

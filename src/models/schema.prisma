@@ -39,6 +39,7 @@ model User {
   entity_name  String?   @db.VarChar(255)
   created_at   DateTime  @default(now()) 
   updated_at  DateTime @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
 
   // Relations
   user_type_id  Int      
@@ -106,7 +107,7 @@ model Order {
 
   // Relations
   user_id Int
-  user   User    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Restrict)
   items  OrderItem[]
 
   @@map("order")
@@ -190,7 +191,7 @@ model RefreshToken{
   id Int @id @default(autoincrement())
   token String
 
-  user    User @relation(fields: [user_id], references: [id])
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 
   created_at   DateTime  @default(now())

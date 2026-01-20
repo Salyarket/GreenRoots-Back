@@ -5,8 +5,9 @@ import userTypesRouter from "./user-type.router.js";
 import orderRouter from "./orders.router.js";
 import userRouter from "./user.router.js";
 import loggerRouter from "./logger.router.js";
-
 import productRouter from "./product.router.js";
+import paymentRouter from "./payments.router.js";
+
 
 export const router = Router();
 
@@ -32,3 +33,6 @@ router.use("/orders", orderRouter);
 router.use("/users", userRouter);
 
 router.use("/logs", loggerRouter);
+
+router.use("/payments", paymentRouter);
+

@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { ConflictError, UnauthorizedError } from "../lib/errors.js";
 import { loginSchema, registerSchema } from "../schemas/user.schema.js";
@@ -8,17 +8,17 @@ import { config } from "../../config.js";
 import { generateAuthenticationTokens } from "../lib/token.js";
 
 export default class AuthController {
-  model: PrismaClient["user"]; // modèle prisma user
+  model: PrismaClient["user"]; // modèle prisma User
   modelName: string;
   refreshToken: PrismaClient["refreshToken"];
 
   constructor(prisma: PrismaClient, modelName: string) {
-    this.model = prisma.user; // recupere le model user
+    this.model = prisma.user; // récupère le modèle user
     this.modelName = modelName;
     this.refreshToken = prisma.refreshToken;
   }
 
-  // 1. FUNCTION REGISTER
+  // Fonction REGISTER
   register = async (req: Request, res: Response, next: NextFunction) => {
     const validatedData = registerSchema.parse(req.body);
 
@@ -27,9 +27,10 @@ export default class AuthController {
       password: string;
     };
     try {
-      // hasher pwd
+      // hâcher le mot de passe
       const hashedPassword = await bcrypt.hash(password, 10);
-      // créer nouveau user
+      
+      // créer un nouveau user
       const user = await this.model.create({
         data: {
           email: email,
@@ -40,18 +41,18 @@ export default class AuthController {
           user_type_id: validatedData.user_type_id,
         },
       });
-      return res.json({ message: "New member created" });
+      return res.json({ message: "Nouveau membre créé" });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
-          throw new ConflictError(`Uniqueness problem`);
+          throw new ConflictError("Problème d'unicité");
         }
       }
       next(error);
     }
   };
 
-  // 2. FUNCTION LOGIN
+  // Fonction LOGIN
   login = async (req: Request, res: Response, next: NextFunction) => {
     const validatedData = loginSchema.parse(req.body);
 
@@ -65,32 +66,31 @@ export default class AuthController {
       const user = await this.model.findFirst({
         where: { email },
       });
-      // si non trouvé -> erreur
+      // si non trouvé => erreur
       if (!user) {
-        throw new UnauthorizedError("Invalid information");
+        throw new UnauthorizedError("Information invalide");
       }
-      // si trouvé -> comparer le pwd avec celui en bdd
+      // si trouvé => comparer le mdp avec celui en bdd
       else {
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-          throw new UnauthorizedError("Invalid information");
+          throw new UnauthorizedError("Information invalide");
         }
       }
-      //  si le pwd match générer un jwt
+      // 1- On vérifie que le secret JWT existe
       const secret = process.env.JWT_SECRET;
-      if (!secret) throw new Error("JWT_SECRET is not defined");
+      if (!secret) throw new Error("JWT_SECRET n'est pas défini");
 
-      // on génère les tokens d'auth
+      // 2- On génère les tokens : access + refresh
       const { accessToken, refreshToken } = generateAuthenticationTokens(user);
 
-      // si besoin on supprime ce qu'il y a déjà en bdd
+      // 3- On remplace (ou on crée) le refresh token en bdd
       await this.replaceRefreshTokenInDB(
         user.id,
         refreshToken.token,
         refreshToken.expiresInMS
       );
-
-      // utilisation des fonctions set pour mettre les tokens dans les cookies de la réponse http
+      // 4- On stocke les tokens dans des cookies httpOnly
       await this.setAccessTokenCookie(
         res,
         accessToken.token,
@@ -103,7 +103,7 @@ export default class AuthController {
       );
 
       return res.json({
-        message: "Login successful",
+        message: "Connexion réussie",
         user: {
           id: user.id,
           email: user.email,
@@ -119,21 +119,23 @@ export default class AuthController {
     }
   };
 
-  // 3. FUNCTION LOGOUT
+  // Fonction LOGOUT
   logoutUser = async (_: Request, res: Response) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: config.server.secure,
+      path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: config.server.secure,
+      path: "/auth/refresh",
     });
-    res.status(204).json({ status: 204, message: "Successfully logged out" });
+    res.status(204).json({ status: 204, message: "Déconnexion réussie" });
   };
 
-  // 3. FUNCTION REFRESH ACCESS TOKEN
-  // function replace refresh token in DB
+  // Fonction REFRESH ACCESS TOKEN
+  // Fonction "replace refresh token dans la bdd"
   replaceRefreshTokenInDB = async (
     userId: number,
     token: string,
@@ -150,7 +152,7 @@ export default class AuthController {
     });
   };
 
-  // logique pour stocker access token dans cookie
+  // logique pour stocker access token dans Cookie
   setAccessTokenCookie = async (
     res: Response,
     token: string,
@@ -160,10 +162,11 @@ export default class AuthController {
       httpOnly: true,
       maxAge: expiresInMs,
       secure: config.server.secure,
+      path: "/",
     });
   };
 
-  // logique pour stocker refresh token dans cookie
+  // logique pour stocker refresh token dans Cookie
   setRefreshTokenCookie = async (
     res: Response,
     token: string,
@@ -173,11 +176,11 @@ export default class AuthController {
       httpOnly: true,
       maxAge: expiresInMs,
       secure: config.server.secure,
-      // path: "api/auth/refresh",
+      path: "/auth/refresh",
     });
   };
 
-  // function refresh access token : prolonger la session d’un utilisateur déjà connecté sans redemander le mot de passe
+  // Fonction "refresh access token" : prolonger la session d’un utilisateur déjà connecté sans demander à nouveau le mdp
   refreshAccessToken = async (
     req: Request,
     res: Response,
@@ -186,7 +189,7 @@ export default class AuthController {
     // récupérer le refresh token
     const rawToken = req.cookies?.refreshToken || req.body?.refreshToken;
     if (!rawToken) {
-      throw new UnauthorizedError("Refresh token not provided");
+      throw new UnauthorizedError("Jeton d'authentification n'est pas fourni");
     }
 
     // vérifier que le token existe en base
@@ -195,7 +198,7 @@ export default class AuthController {
       include: { user: true },
     });
     if (!existingRefreshToken) {
-      throw new UnauthorizedError("Invalid refresh token");
+      throw new UnauthorizedError("Jeton d'authentification invalide");
     }
 
     // vérifier la validité du token
@@ -203,7 +206,7 @@ export default class AuthController {
       await this.refreshToken.delete({
         where: { id: existingRefreshToken.id },
       });
-      throw new UnauthorizedError("Expired refresh token");
+      throw new UnauthorizedError("Jeton d'authentification expiré");
     }
 
     // générer les tokens d'authentification
@@ -219,8 +222,8 @@ export default class AuthController {
     );
 
     // mettre les tokens en cookie
-    this.setAccessTokenCookie(res, accessToken.token, accessToken.expiresInMS);
-    this.setRefreshTokenCookie(
+    await this.setAccessTokenCookie(res, accessToken.token, accessToken.expiresInMS);
+    await this.setRefreshTokenCookie(
       res,
       refreshToken.token,
       refreshToken.expiresInMS

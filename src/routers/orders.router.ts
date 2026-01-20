@@ -44,8 +44,8 @@ router.get(
  *       200:
  *         description: Liste des commandes
  */
-// Récup toutes les commandes (admin only, back-office)
-router.get("/", checkRoles(["admin"]), orderController.getAll);
+// Récup toutes les commandes (admin only)
+router.get("/", checkRoles(["admin"]), orderController.getAllOrdersAdmin);
 
 /**
  * @swagger
@@ -65,6 +65,7 @@ router.get("/", checkRoles(["admin"]), orderController.getAll);
  *       200:
  *         description: Liste des commandes de l’utilisateur
  */
+
 // voir commandes d’un utilisateur précis (admin only)
 router.get(
   "/users/:id/orders",

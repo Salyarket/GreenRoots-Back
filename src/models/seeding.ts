@@ -6,7 +6,7 @@ async function main() {
   // ============================
   // User Types
   // ============================
-  console.log("🌱🌱🌱 Starting seeding UserType...🌱🌱");
+  console.log("🌱🌱🌱 ...Starting seeding UserType... 🌱🌱🌱");
 
   await prisma.userType.createMany({
     data: [
@@ -16,12 +16,12 @@ async function main() {
     ],
     skipDuplicates: true,
   });
-  console.log("✅ Seeding UserType Done ✅");
+  console.log("Seeding UserType Done ✅");
 
   // ============================
   // Users (10)
   // ============================
-  console.log("🌱🌱🌱 Starting seeding Users...🌱🌱");
+  console.log("🌱🌱🌱 Starting seeding USERS...🌱🌱");
 
   await prisma.user.createMany({
     data: [
@@ -47,7 +47,7 @@ async function main() {
       },
       {
         firstname: "Claire",
-        lastname: "Dupont",
+        lastname: "Forêt",
         email: "claire@example.com",
         password:
           "$2b$10$nY7OHHb/TS21LeCSGdc4A.f9UgvrrjfCkvSCpg59my4j2StLQrMAO",
@@ -68,14 +68,14 @@ async function main() {
     ],
     skipDuplicates: true,
   });
-  console.log("✅ Seeding Users Done ✅");
+  console.log("✅ Seeding USERS Done ✅");
 
   const users = await prisma.user.findMany();
 
   // ============================
   // Locations (10)
   // ============================
-  console.log("🌱🌱🌱 Starting seeding Locations...🌱🌱");
+  console.log("🌱🌱🌱 ...Starting seeding LOCATIONS... 🌱🌱🌱");
 
   await prisma.location.createMany({
     data: [
@@ -109,14 +109,14 @@ async function main() {
     ],
     skipDuplicates: true,
   });
-  console.log("✅ Seeding Locations Done ✅");
+  console.log("✅ Seeding LOCATIONS Done ✅");
 
   const locations = await prisma.location.findMany();
 
   // ============================
   // Products (20 arbres)
   // ============================
-  console.log("🌱🌱🌱 Starting seeding Products...🌱🌱");
+  console.log("🌱🌱🌱 ...Starting seeding PRODUCTS... 🌱🌱🌱");
 
   await prisma.product.createMany({
     data: [
@@ -343,7 +343,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("✅ Seeding Products Done ✅");
+  console.log("✅ Seeding PRODUCTS Done ✅");
 
   const products = await prisma.product.findMany();
 
@@ -420,12 +420,12 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("✅ Product-Location relations seeded");
+  console.log("✅ Product-Location relations seeded ✅");
 
   // ============================
   // Orders (20 commandes)
   // ============================
-  console.log("🌱🌱🌱 Starting seeding Orders...🌱🌱");
+  console.log("🌱🌱🌱 ...Starting seeding ORDERS... 🌱🌱🌱");
 
   for (let i = 0; i < 20; i++) {
     const user = users[i % users.length];
@@ -457,7 +457,7 @@ async function main() {
     });
   }
 
-  console.log("✅ Seeding Orders Done ✅");
+  console.log("✅ Seeding ORDERS Done ✅");
 
   console.log("🚀🚀🚀 Seeding finished 🚀🚀🚀");
 }

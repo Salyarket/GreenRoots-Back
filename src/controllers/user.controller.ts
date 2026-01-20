@@ -16,7 +16,7 @@ class UserController extends BaseController {
     super(prisma.user, "user", updateUserSchema, userRelations);
   }
 
-  // UPDATE an user
+  // UPDATE un user
   updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user_id = parseInt(req.params.id);
@@ -30,13 +30,13 @@ class UserController extends BaseController {
       // Préparation des données à mettre à jour
       const updateData: any = { ...data, updated_at: new Date() };
 
-      // Si password fourni on le hash avant maj
+      // Si mdp fourni on le hâche avant maj
       if (data.password) {
         updateData.password = await bcrypt.hash(data.password, 10);
       }
 
       // Si userTypeId fourni on le transforme en relation Prisma
-      if (data.userTypeId) {
+      if (data.userTypeId !== undefined) {
         updateData.userType = { connect: { id: data.userTypeId } };
         delete updateData.userTypeId;
       }
@@ -96,7 +96,7 @@ class UserController extends BaseController {
       if (role !== "admin") {
         delete updateData.role;
         delete updateData.userTypeId;
-      } else if (data.userTypeId) {
+      } else if (data.userTypeId !== undefined) {
         updateData.user_type_id = data.userTypeId;
         delete updateData.userTypeId;
       }

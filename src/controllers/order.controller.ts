@@ -4,7 +4,6 @@ import {
 } from "../schemas/order.schema.js";
 import {
   BadRequestError,
-  HttpClientError,
   NotFoundError,
 } from "../lib/errors.js";
 import { prisma } from "../models/index.js";
@@ -51,12 +50,7 @@ class OrderController extends BaseController {
         throw new BadRequestError(message);
       }
 
-      // Une transaction en base de données, c’est un ensemble d’opérations qui doivent toutes réussir ou toutes échouer. (on ne veut surtout pas valider la commande si un seul des produits n'est pas dispo)
       const createdOrder = await prisma.$transaction(async (tx) => {
-        // tx est une “connexion transactionnelle” fournie par Prisma.
-        // tx est comme une version temporaire de prisma qui travaille dans une transaction.
-        // Si une seule mise à jour échoue (ex. stock négatif, contrainte en BDD, etc.), tout est annulé :
-        // la commande n’est pas créée, le stock n’est pas modifié.
         const order = await tx.order.create({
           data: {
             status: data.status,
@@ -79,7 +73,6 @@ class OrderController extends BaseController {
             data: { stock: { decrement: item.quantity } },
           });
         }
-
         return order;
       });
 
@@ -89,7 +82,6 @@ class OrderController extends BaseController {
     }
   };
 
-  // UPDATE an order
   updateOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const order_id = parseInt(req.params.id);
@@ -111,12 +103,7 @@ class OrderController extends BaseController {
     }
   };
 
-  // récupérer les commandes d'un user
-  getOrdersByUserId = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  getOrdersByUserId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user_id = parseInt(req.params.id);
       const orders = await this.model.findMany({
@@ -129,20 +116,34 @@ class OrderController extends BaseController {
     }
   };
 
-  //récupérer mes commandes
   getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user_id = (req as any).userId; // injecté par le middleware JWT
+      const user_id = (req as any).userId;
       const orders = await this.model.findMany({
         where: { user_id },
         include: this.relations,
       });
       res.json(orders);
-      // si pas d'order -> res.json vide (idem pour tout le fichier)
     } catch (error) {
       next(error);
     }
   };
-}
+
+  // récupérer toutes les commandes (admin)
+  getAllOrdersAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orders = await prisma.order.findMany({
+        include: {
+          user: true,
+          items: { include: { product: true } },
+        },
+      });
+
+      res.json(orders);
+    } catch (error) {
+      next(error);
+    }
+  };
+} 
 
 export default new OrderController();

@@ -19,13 +19,13 @@ _1_: Docker commandes
   - ex : "docker compose exec backend npm run db:migrate:dev "
   - ex : "docker compose exec backend npm run db:seed "
 
-# Problème rencontré linux/windows
+# Problèmes rencontrés linux/windows
 
-Pas de recharger sur windows avec le tsx -- watch (ne fonctionne que sur linux)
+Pas de "recharger" sur windows avec le tsx -- watch (ne fonctionne que sur linux)
 donc pour palier à ca, installation de nodemon sur windows avec config
 legacyWatch dit à nodemon :
 “N’utilise pas les événements système, mais vérifie régulièrement si les fichiers ont changé (polling)”.
-C’est beaucoup plus compatible avec les volumes Docker sur Windows/Mac.
+C’est bien plus compatible avec les volumes Docker sur Windows/Mac.
 L’inconvénient : un peu plus de CPU, mais largement acceptable en dev. -->
 
 nodemon.json : '''

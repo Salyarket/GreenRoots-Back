@@ -9,12 +9,12 @@ export function generateAuthenticationTokens(user: User) {
     role: user.role,
   };
 
-  // generer access token
+  // générer access token
   const accessToken = jwt.sign(payload, config.server.jwtSecret, {
     expiresIn: "1h",
   });
 
-  // generer refresh token
+  // générer refresh token
   const refreshToken = crypto.randomBytes(128).toString("base64");
 
   return {

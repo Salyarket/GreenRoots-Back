@@ -2,7 +2,7 @@
 
 ## Initialisation
 
-1.  !!!OUVRIR VOTRE DOCKER APPLICATION!!!
+1.  !!! OUVRIR VOTRE DOCKER APPLICATION !!!
 2.  Tapper dans le terminal pour supprimer les anciennes images/conteneurs : "docker compose down -v --rmi all"
 3.  créer un .env à la racine du projet et copier-coller à partir de .env.example
 
@@ -33,7 +33,7 @@
 
 ## PostreSQL + Prisma initialisation
 
-- 1 : ouvrir un terminal et tappez : "sudo -i -u postgres psql"
+- 1 : ouvrir un terminal et tappez : "sudo -i -u postgres psql" pour Postgres installé en local
 - 2 : CREATE USER greenroots WITH ENCRYPTED PASSWORD 'greenroots';
 - 3 : ALTER USER greenroots CREATEDB;
 - 4 : _npm run db:generate_ (init client in node_modules)

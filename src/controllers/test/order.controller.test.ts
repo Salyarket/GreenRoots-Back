@@ -1,36 +1,74 @@
-import { test, mock } from "node:test";
+import { test, mock, beforeEach } from "node:test";
 import assert from "node:assert";
-import orderController from "../order.controller.js";
-import { PrismaClient } from "@prisma/client";
+
+const productFindManyMock = mock.fn(async () => [
+  { id: 10, stock: 5, name: "Tilleul" },
+]);
+
+const orderCreateMock = mock.fn(async () => ({
+  id: 1,
+  status: "pending",
+  total: 1850,
+  items: [],
+  user: { id: 2 },
+}));
+
+const productUpdateMock = mock.fn(async () => ({}));
+
+const transactionMock = mock.fn(async (cb: any) => {
+  return cb({
+    order: { create: orderCreateMock },
+    product: { update: productUpdateMock },
+  });
+});
+
+mock.module("../../models/index.js", {
+  namedExports: {
+    prisma: {
+      product: { findMany: productFindManyMock },
+      $transaction: transactionMock,
+    },
+  },
+});
+
+const { default: orderController } = await import("../order.controller.js");
+
+beforeEach(() => {
+  productFindManyMock.mock.resetCalls();
+  orderCreateMock.mock.resetCalls();
+  productUpdateMock.mock.resetCalls();
+  transactionMock.mock.resetCalls();
+});
 
 test("Test createOrder", async () => {
-  const fakeModel = {
-    create: mock.fn(async () => ({ id: 1, status: "pending", total: 1590 })),
-  } as unknown as PrismaClient["order"];
+  const res = {
+    status: mock.fn(),
+    json: mock.fn(),
+  };
+  res.status.mock.mockImplementation(() => res);
 
-  orderController.model = fakeModel;
-
-  // Utilise l'instance existante mais teste une méthode différente
-  const res: any = {};
   const req = {
     body: {
       status: "pending",
-      total: 1590,
-      user: { id: 2 },
+      total: 1850,
+      userId: 2,
+      items: [{ productId: 10, quantity: 2, unitPrice: 925 }],
     },
   };
   const next = mock.fn();
 
-  res.status = mock.fn(() => res);
-  res.json = mock.fn();
-
-  // Appel simple pour voir si ça fonctionne
   await orderController.createOrder(req as any, res as any, next as any);
 
+  assert.strictEqual(next.mock.calls.length, 0);
+  assert.strictEqual(productFindManyMock.mock.calls.length, 1);
+  assert.strictEqual(transactionMock.mock.calls.length, 1);
+  assert.strictEqual(res.status.mock.calls[0].arguments[0], 201);
   assert.strictEqual(res.json.mock.calls.length, 1);
   assert.deepStrictEqual(res.json.mock.calls[0].arguments[0], {
     id: 1,
     status: "pending",
-    total: 1590,
+    total: 1850,
+    items: [],
+    user: { id: 2 },
   });
 });

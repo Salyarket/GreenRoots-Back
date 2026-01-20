@@ -21,6 +21,7 @@ export const updateUserSchema = z.object({
     .optional(),
 
   email: z
+    .string()
     .email({ message: "Adresse email invalide" })
     .max(320, { message: "L'email ne peut pas dépasser 320 caractères" })
     .optional(),
@@ -47,7 +48,7 @@ export const updateUserSchema = z.object({
     .optional(),
 
   userTypeId: z
-    .number()
+    .coerce.number()
     .int({ message: "L'ID du type d'utilisateur doit être un entier" })
     .positive({ message: "L'ID du type d'utilisateur doit être positif" })
     .optional(),
@@ -67,6 +68,7 @@ export const registerSchema = z.object({
     .regex(onlyLetters),
 
   email: z
+    .string()
     .email({ message: "Adresse email invalide" })
     .max(320, { message: "L'email ne peut pas dépasser 320 caractères" }),
 
@@ -84,7 +86,7 @@ export const registerSchema = z.object({
     .default("member"),
 
   user_type_id: z
-    .number()
+    .coerce.number()
     .int({ message: "L'ID du type d'utilisateur doit être un entier" })
     .positive()
     .default(1),
@@ -99,6 +101,7 @@ export const registerSchema = z.object({
 
 export const loginSchema = z.object({
   email: z
+    .string()
     .email({ message: "Adresse email invalide" })
     .max(320, { message: "L'email ne peut pas dépasser 320 caractères" }),
 

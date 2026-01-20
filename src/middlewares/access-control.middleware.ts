@@ -1,21 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-//import { Role } from "../models/generated/client"; ===> quand client branché
 
 // type attendu dans le jwt
 interface MyJWTPayload {
   userId: number;
-  role: string; //role: Role ==> quand client branché
+  role: string;
 }
 
-// vérif des rôles
+// vérif' des rôles
 export function checkRoles(roles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       // on utilise la fonction utilitaire, on met authHeader pour éviter les conflits
       const token = extractAccessToken(req);
 
-      // vérif et décode le jwt
+      // vérif' et décode le jwt
       const decoded = jwt.verify(
         token,
         process.env.JWT_SECRET!
@@ -32,7 +31,7 @@ export function checkRoles(roles: string[]) {
 
       next();
     } catch {
-      return res.status(401).json({ error: "Token invalide ou expiré" });
+      return res.status(401).json({ error: "Jeton invalide ou expiré" });
     }
   };
 }
@@ -44,5 +43,5 @@ function extractAccessToken(req: Request): string {
   if (typeof req.headers?.authorization === "string") {
     return req.headers.authorization.split(" ")[1]; // "Bearer <token>"
   }
-  throw new Error("Token non fournit");
+  throw new Error("Token non fourni");
 }

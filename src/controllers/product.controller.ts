@@ -18,11 +18,6 @@ import { TextToSlugCreate, TextToSlugUpdate } from "../utils/TextToSlug.js";
 import path from "path";
 import fs from "fs";
 
-// TRAVAIL TARIG AVEC OUMAMA , TARIG VA REVOIR PRODUCT CONTORLLER AVEC GESTION DES ERREUR ERROR.TS puis GLOBAL ERROR HANDLER
-// ex :catch (error) {
-//   next(error);
-// }
-
 const prisma = new PrismaClient();
 
 class ProductController extends BaseController {
@@ -30,7 +25,7 @@ class ProductController extends BaseController {
     super(prisma.product, "product", productDbSchema);
   }
 
-  // pour admin, récupère tous les produits meme ceux non available (pour infor quand produit = available = false ca veut dire qu'on la soft deleted)
+  // pour admin, récupère tous les produits meme ceux non available (pour info quand "produit = available = false" ca veut dire qu'on la soft deleted)
   getAllAvailableWithPagination = async (req: any, res: any, next: any) => {
     try {
       const { page, limit, sortBy, sortOrder } = await Pagination(req.query);
@@ -59,7 +54,6 @@ class ProductController extends BaseController {
     }
   };
 
-  // TARIG REVOIR PERSO
   getOneProductWithLocations = async (req: any, res: any) => {
     const productId = await parseIdFromParams(req.params.id);
 
@@ -86,13 +80,13 @@ class ProductController extends BaseController {
 
   createProduct = async (req: any, res: any) => {
     try {
-      // 1. Validation des données brutes
+      // 1) Validation des données brutes
       const data = await productSchemaForCreate.parseAsync(req.body);
 
-      // 2. Création du slug à partir du nom du produit
+      // 2) Création du slug à partir du nom du produit
       const dataWithSlug = TextToSlugCreate(data);
 
-      // 3. Ajout des chemins pour accéder aux images
+      // 3) Ajout des chemins pour accéder aux images
       const imgPath = ImgCreatePath(
         dataWithSlug,
         req.files as Express.Multer.File[]
@@ -165,11 +159,11 @@ class ProductController extends BaseController {
         newImageUrls = files.map((f) => f.path.replace(/\\/g, "/"));
       }
 
-      // 6) Construire un objet **propre** pour Prisma (pas de replace_images, etc.)
+      // 6) Construire un objet **propre** pour Prisma (pas de replace_images, etc...)
       const updateData: Prisma.ProductUpdateInput = {
         name: withSlug.name,
         slug: withSlug.slug,
-        price: withSlug.price as any, // Decimal compatible: string | number | Prisma.Decimal
+        price: withSlug.price as any, // Décimale compatible : string | number | Prisma.Decimal
         description: withSlug.description,
         available: withSlug.available,
         stock: withSlug.stock,
@@ -202,13 +196,13 @@ class ProductController extends BaseController {
 
   deleteProduct = async (req: any, res: any) => {
     try {
-      // 1. Vérifier que l'id est bien un nombre
+      // 1) Vérifier que l'id est bien un nombre
       const productId = Number(req.params.id);
       if (isNaN(productId)) {
         return res.status(400).json({ error: "Id du produit invalide" });
       }
 
-      // 2.  Récupérer le produit existant pour accéder aux images
+      // 2) Récupérer le produit existant pour accéder aux images
       const product = await prisma.product.findUnique({
         where: { id: productId },
         select: { image_urls: true },
@@ -218,7 +212,7 @@ class ProductController extends BaseController {
         return res.status(404).json({ error: "Produit non trouvé" });
       }
 
-      // 3. Supprimer les fichiers images associés
+      // 3) Supprimer les fichiers images associés
       if (product.image_urls?.length) {
         try {
           await deleteFiles(product.image_urls);
@@ -227,7 +221,7 @@ class ProductController extends BaseController {
             "impossible de supprimer le ou les fichiers:",
             fileError
           );
-          // Attention : erreur indiqué mais on continue la suppression en DB (a voir si return)
+          // Attention : erreur indiquée mais on continue la suppression en DB (a voir si return)
         }
       }
 
@@ -254,7 +248,7 @@ class ProductController extends BaseController {
     }
   };
 
-  // soft delete le product avec un archive (available = false) donc on le sort du catalogue mais on garde une trace d'historique pour garder la ligne des les commandes du client
+  // soft delete le product avec un archive (available = false) donc on le sort du catalogue mais on garde une trace d'historique pour garder la ligne des commandes du client
   archiveProduct = async (req: any, res: any) => {
     try {
       const { id } = idParamSchema.parse(req.params);

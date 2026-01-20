@@ -23,7 +23,7 @@ export function TextToSlugUpdate(
   const updated = data; 
   // let updated = { ...rest  };
 
-  // Si name modifié et slug absent → regénérer slug
+  // Si name modifié et slug absent => regénérer slug
   if (updated.name && !updated.slug) {
     if (updated.name !== existing.name) {
       updated.slug = slugify(updated.name, {
