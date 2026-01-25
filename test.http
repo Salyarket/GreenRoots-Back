@@ -5,7 +5,7 @@ POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
-    "email": "OUMAMA@new.fr",
+    "email": "member@new.fr",
     "password": "testtest",
     "role": "member",
     "firstname": "test",
@@ -15,77 +15,3 @@ Content-Type: application/json
 
 ### GET ALL TYPES
 GET http://localhost:3001/locations
-
-
-
-# ### User login OK (admin = id 2)
-# POST http://localhost:5000/auth/login
-# Content-Type: application/json
-
-# {
-#     "email": "member@member.fr",
-#     "password": "member"
-# }
-
-# ### GET ALL POKEMONS
-# GET http://localhost:5000/pokemons
-
-# ### GET ONE POKEMON BY ID
-# GET http://localhost:5000/pokemons/5
-
-# ### GET ALL TYPES
-# GET http://localhost:5000/types
-
-# ### GET ONE TYPE BY ID
-# GET http://localhost:5000/types/5
-
-# ### GET ALL TEAMS
-# GET http://localhost:5000/teams
-
-# ### CREATE ONE TEAM
-# POST http://localhost:5000/teams
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
-
-# {
-#     "name": "team ROCKETtttttt",
-#     "description": "We are the bad guys"
-# }
-
-# ### UPDATE ONE TEAM BY ID
-# PATCH http://localhost:5000/teams/1
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
-
-# {
-#     "name": "Team 1",
-#     "description": "This is the first team"
-# }
-
-# ### DELETE ONE TEAM BY ID
-# DELETE http://localhost:5000/teams/8
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
-
-# ### ADD ONE POKEMON TO A TEAM
-# POST http://localhost:5000/teams/add-pokemons
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
-
-# {
-#     "teamId": "1",
-#     "pokemonId": "1"
-# }
-
-# ### DELETE ONE POKEMON FROM A TEAM
-# DELETE http://localhost:5000/teams/remove-pokemons
-# Content-Type: application/json
-# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTE0NDUzOTksImV4cCI6MTc1MTUzMTc5OX0.ArOew4ryc0oRjkdVZXr93cTVEMoQPxnpRQlXL93sm-k
-
-# {
-#     "teamId": "1",
-#     "pokemonId": "1"
-# }
-
-
-
