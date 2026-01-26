@@ -121,14 +121,20 @@ export default class AuthController {
 
   // Fonction LOGOUT
   logoutUser = async (_: Request, res: Response) => {
+    const sameSite = config.server.secure ? "none" : "lax";
+    const domain = config.server.cookieDomain || undefined;
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: config.server.secure,
+      sameSite,
+      domain,
       path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: config.server.secure,
+      sameSite,
+      domain,
       path: "/auth/refresh",
     });
     res.status(204).json({ status: 204, message: "Déconnexion réussie" });
@@ -158,10 +164,14 @@ export default class AuthController {
     token: string,
     expiresInMs: number
   ) => {
+    const sameSite = config.server.secure ? "none" : "lax";
+    const domain = config.server.cookieDomain || undefined;
     res.cookie("accessToken", token, {
       httpOnly: true,
       maxAge: expiresInMs,
       secure: config.server.secure,
+      sameSite,
+      domain,
       path: "/",
     });
   };
@@ -172,10 +182,14 @@ export default class AuthController {
     token: string,
     expiresInMs: number
   ) => {
+    const sameSite = config.server.secure ? "none" : "lax";
+    const domain = config.server.cookieDomain || undefined;
     res.cookie("refreshToken", token, {
       httpOnly: true,
       maxAge: expiresInMs,
       secure: config.server.secure,
+      sameSite,
+      domain,
       path: "/auth/refresh",
     });
   };

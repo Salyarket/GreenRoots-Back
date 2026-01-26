@@ -24,7 +24,16 @@ export const app = express();
 // Autoriser les requêtes cross-origin.
 app.use(
   cors({
-    origin: config.server.allowedOrigins, // Depuis le front.
+    origin: (origin, callback) => {
+      const allowedOrigins = config.server.allowedOrigins;
+      if (!origin || allowedOrigins.length === 0) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true, // si True, on ne met pas mettre allow-origin à '*' car il faut un domaine précis.
   })
 );
