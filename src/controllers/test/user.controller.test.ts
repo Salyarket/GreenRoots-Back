@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import userController from "../user.controller.js";
 
 // TEST : updateUser = SUCCESS
-test("Test updateUser : met à jour un utilisateur et hâche le mdp", async () => {
+test("Test updateUser : met à jour un utilisateur et hache le mdp", async () => {
   // Mock bcrypt.hash
   const hashMock = mock.method(
     bcrypt,

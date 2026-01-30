@@ -2,33 +2,33 @@
           │     main      │  ← Production (stable)
           └───────▲───────┘
                   │
-                  │ (PR dev → main)
+                  │ (Pull Request DEV → MAIN)
                   │
           ┌───────┴───────┐
           │      dev      │  ← Intégration
           └───▲───▲───▲───┘
               │   │   │
-
-┌──────────┘ │ └───────────┐
-│ │ │
+              │   │   │
+   ┌──────────┘   │   └───────────┐
+   │              │               │
 ┌──┴─────────┐┌───┴─────────┐┌────┴─────────┐
-│ feature/A ││ feature/B ││ feature/C │ ← branches perso
-└────────────┘└─────────────┘└─────────────┘
+│  feature/A ││  feature/B  ││   feature/C  │ ← branches perso
+└────────────┘└─────────────┘└──────────────┘
 
 # Créer une branche de travail (feature)
 
 git branch -a : voir toutes les branches
-git checkout dev : (aller sur dev = notre branche intégration)
-git pull origin dev : (récupérer branche dev la plus récente)
-git checkout -b feature/ma-feature (pour créer votre branche avec nom explicite)
-git push -u origin feature/ma-feature (pour qu'elle apparaisse en ligne)
+git checkout dev : aller sur DEV = notre branche intégration
+git pull origin dev : récupérer branche DEV la plus récente
+git checkout -b feature/ma-feature : pour créer notre branche avec nom explicite
+git push -u origin feature/ma-feature : pour qu'elle apparaisse en ligne
 
 ---
 
 # Travailler sur sa feature
 
 git add .
-git commit -m "Ajout de la feature XYZ"
+git commit -m "faire son commit en anglais"
 git push
 
 ---
@@ -36,9 +36,9 @@ git push
 # Mettre sa feature à jour avec dev
 
 git checkout dev
-git pull origin dev (récupérer les derniers changements de l’équipe)
+git pull origin dev : récupérer les derniers changements de l’équipe
 git checkout feature/ma-feature
-git merge dev (fusionner dev dans ma feature)
+git merge dev : fusionner DEV dans ma feature
 résoudre les conflits si besoin
 
 
@@ -51,5 +51,5 @@ git push
 Aller sur GitHub → Pull requests → New pull request
 base branch = dev
 compare branch = feature/ma-feature
-Ajouter un titre + description → Create pull request pour envoyer sur dev
-faire pareil de dev => main
+Ajouter un titre + description → Create pull request pour envoyer sur DEV
+faire pareil de DEV => MAIN

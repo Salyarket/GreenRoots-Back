@@ -12,7 +12,7 @@ export function globalErrorHandler(
 ) {
   console.error(error);
 
-  // Gestion des erreurs Zod - 400
+  // Gestion des erreurs Zod = 400
   if (error instanceof z.ZodError) {
     res.status(400).json({
       status: 400,
@@ -68,6 +68,6 @@ export function globalErrorHandler(
   // Gestion des erreurs serveur - 500
   res.status(500).json({
     status: 500,
-    error: "Internal server error",
+    error: "Erreur interne du serveur",
   });
 }

@@ -18,10 +18,10 @@ import paymentsWebhookRouter from "./routers/payments.webhook.router.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Créer une app Express.
+// Création de l'app Express
 export const app = express();
 
-// Autoriser les requêtes cross-origin.
+// Autorisation des requêtes cross-origin
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -32,13 +32,13 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error("Not allowed by CORS"));
+      return callback(new Error("Non-autorisé par CORS"));
     },
     credentials: true, // si True, on ne met pas mettre allow-origin à '*' car il faut un domaine précis.
   })
 );
 
-// Middleware pour parser les cookies (attention : avant les routes).
+// Middleware pour analyser les cookies (attention : placer avant les routes).
 app.use(cookieParser());
 
 // Middleware pour servir les fichiers du dossier uploads.

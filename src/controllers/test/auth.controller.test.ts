@@ -4,7 +4,7 @@ import AuthController from "../auth.controller.js";
 import { PrismaClient } from "@prisma/client";
 import { test, mock } from "node:test";
 
-test("Test register : créer un user et hâche le mdp", async () => {
+test("Test register : créer un user et hache le mdp", async () => {
   // ARRANGE : arrangement des données de test
   const hashMock = mock.method(
     bcrypt,
