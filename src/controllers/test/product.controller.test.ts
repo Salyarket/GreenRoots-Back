@@ -3,11 +3,18 @@ import assert from "node:assert";
 import productController from "../product.controller.js";
 
 test("Test getAllAvailableWithPagination", async () => {
-  // Utilise l'instance existante mais teste une méthode différente
+  // Mock Prisma model
+  const fakeModel = {
+    findMany: mock.fn(async () => [{ id: 1, name: "Test" }]),
+    count: mock.fn(async () => 1),
+  };
+
+  // Injection du mock
+  (productController as any).model = fakeModel;
+
   const res = { json: mock.fn() };
   const next = mock.fn();
 
-  // Appel simple pour voir si ça fonctionne
   await productController.getAllAvailableWithPagination(
     { query: { page: "1", limit: "10" } } as any,
     res as any,
@@ -15,4 +22,6 @@ test("Test getAllAvailableWithPagination", async () => {
   );
 
   assert.strictEqual(res.json.mock.calls.length, 1);
+  assert.strictEqual(fakeModel.findMany.mock.calls.length, 1);
+  assert.strictEqual(fakeModel.count.mock.calls.length, 1);
 });
