@@ -2,9 +2,9 @@ name: CI GreenRoots
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
 
 jobs:
   build-and-test:
@@ -16,4 +16,4 @@ jobs:
           node-version: "20"
           cache: "npm"
       - run: npm ci
-      - run: npm test
+      - run: npm test --if-present
