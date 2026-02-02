@@ -16,5 +16,6 @@ jobs:
           node-version: "20"
           cache: "npm"
       - run: npm ci
-      - run: npm run db:generate
+      - run: npx prisma generate --schema=./src/models/schema.prisma
+
       - run: node --test --import tsx --experimental-test-module-mocks $(find src -name '*.test.ts')
