@@ -84,7 +84,7 @@ export default class AuthController {
       // 2- On génère les tokens : access + refresh
       const { accessToken, refreshToken } = generateAuthenticationTokens(user);
 
-      // 3- On remplace (ou on crée) le refresh token en bdd
+      // 3- On remplace (ou on créé) le refresh token en bdd
       await this.replaceRefreshTokenInDB(
         user.id,
         refreshToken.token,
@@ -140,7 +140,6 @@ export default class AuthController {
     res.status(204).json({ status: 204, message: "Déconnexion réussie" });
   };
 
-  // Fonction REFRESH ACCESS TOKEN
   // Fonction "replace refresh token dans la bdd"
   replaceRefreshTokenInDB = async (
     userId: number,

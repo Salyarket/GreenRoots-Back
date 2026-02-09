@@ -35,4 +35,3 @@ router.use("/users", userRouter);
 router.use("/logs", loggerRouter);
 
 router.use("/payments", paymentRouter);
-
